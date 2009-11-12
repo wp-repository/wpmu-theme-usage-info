@@ -15,7 +15,7 @@ Included files:
 * cets\_theme\_info.php
 * cets\_theme\_info folder - lib folder - tablesort.js
 
-WPMU has two ways to activate themes – either sitewide, or on a blog-by-blog basis. But, there’s no convenient way built-in to know which themes are actually being used, or by whom. This plugin addresses that issue by creating a “Theme Usage Info” sub-menu of the Site Admin menu. Included on the page are two tables of data – one of themes currently being used, and one of themes not currently being used. The currently used themes table provides information on how many blogs are using the theme, which blogs are using it, and whether or not the theme is currently activated site-wide. The table of unused themes provides information on whether the theme is currently activated sitewide.
+WPMU has two ways to activate themes - either sitewide, or on a blog-by-blog basis. But, there's no convenient way built-in to know which themes are actually being used, or by whom. This plugin addresses that issue by creating a "Theme Usage Info" sub-menu of the Site Admin menu. Included on the page are two tables of data - one of themes currently being used, and one of themes not currently being used. The currently used themes table provides information on how many blogs are using the theme, which blogs are using it, and whether or not the theme is currently activated site-wide. The table of unused themes provides information on whether the theme is currently activated sitewide.
 
 In addition, site admins can choose to provide this information to their users via a toggle on the administration page.
 
@@ -36,9 +36,5 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 3. User view of theme popularity information.
 4. User view of blogs using theme.
 
-== Frequently Asked Questions ==
-
-
-== Changelog ==
 
 
