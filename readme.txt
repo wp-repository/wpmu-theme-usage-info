@@ -1,5 +1,5 @@
 === WPMU Theme Info ===
-Contributors: Deanna Schneider, Kevin Graeme
+Contributors: DeannaS, kgraeme
 Tags: WPMU, Wordpress Mu, Wordpress Multiuser, Theme Stats 
 Requires at least: 2.7
 Tested up to: 2.8.5.2
