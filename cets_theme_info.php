@@ -8,7 +8,7 @@ Plugin URI:
 
 Description: WordPress plugin for letting site admins easily see what themes are actively used on their site
 
-Version: 1.0
+Version: 1.1
 
 Author: Kevin Graeme & Deanna Schneider
 
@@ -212,6 +212,24 @@ function theme_info_page(){
 	?>
 	<!-- This pulls in the table sorting script -->
 	<SCRIPT LANGUAGE='JavaScript1.2' SRC='<?php echo $file; ?>'></SCRIPT>
+	<!-- Some extra CSS -->
+	<style type="text/css">
+		.bloglist {
+			display:none;
+		}
+		.pc_settings_heading {
+			text-align: center; 
+			border-right:  3px solid black;
+			border-left: 3px solid black;
+			
+		}
+		.pc_settings_left {
+			border-left: 3px solid black;
+		}
+		.pc_settings_right {
+			border-right: 3px solid black;
+		}
+	</style>
 	<div class="wrap">
 		<h2>Theme Usage Information</h2>
 		<table class="widefat" id="cets_active_themes">
@@ -227,15 +245,24 @@ function theme_info_page(){
 			</thead>
 			<tbody id="plugins">
 	<?php
+	$counter = 0;
 	foreach ($list as $theme => $blogs){
+		$counter = $counter + 1;
 		echo('<tr valign="top"><td>' .$theme .'</td><td>');
 		
 		// get the array for this theme
 		$thisTheme = $themes[$theme];
 		if (array_key_exists($thisTheme['Stylesheet'], $allowed_themes)) { echo ("Yes");}
 		else {echo ("No");}
-		echo ('</td><td>' . sizeOf($blogs) . '</td><td><ul>');
-			foreach($blogs as $key => $row){
+		echo ('</td><td>' . sizeOf($blogs) . '</td><td>');
+		
+		?>
+		<a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo $counter; ?>').toggle(400);">Show/Hide Blogs</a>
+		
+		
+		<?php
+		echo ('<ul class="bloglist" id="bloglist_' . $counter  . '">');
+		foreach($blogs as $key => $row){
 				$name[$key] = $row['name'];
 				$blogurl[$key] = $row['blogurl'];
 			}
@@ -246,7 +273,11 @@ function theme_info_page(){
 			foreach($blogs as $blog){
 				echo ('<li><a href="http://' . $blog['blogurl'] . '" target="new">' . $blog['name'] . '</a></li>');
 			}
+			
 		echo ('</ul></td>');
+		
+		
+		
 		
 		
 	}
