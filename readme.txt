@@ -1,8 +1,8 @@
-=== WPMU Theme Info ===
+﻿=== WPMU Theme Info ===
 Contributors: DeannaS, kgraeme
 Tags: WPMU, Wordpress Mu, Wordpress Multiuser, Theme Stats 
 Requires at least: 2.7
-Tested up to: 2.9.1.1
+Tested up to: 3.0
 Stable tag: trunk
 
 
