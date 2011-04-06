@@ -8,9 +8,9 @@ Plugin URI:
 
 Description: WordPress plugin for letting site admins easily see what themes are actively used on their site
 
-Version: 1.1
+Version: 1.2
 
-Author: Kevin Graeme & Deanna Schneider
+Author: Kevin Graeme & Deanna Schneider & Jason Lemahieu
 
 
 Copyright:
@@ -26,28 +26,39 @@ class cets_Theme_Info {
 
 
 function cets_theme_info() {
+	global $wp_version;
 	
-
-	add_filter('theme_action_links', array(&$this, 'action_links'), 9, 2);
-	add_action('admin_menu', array(&$this, 'theme_info_add_page'));
-	add_action('switch_theme', array(&$this, 'on_switch_theme'));
-	
-	if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
-			
-			wp_enqueue_script('jquery');
-			wp_enqueue_script('thickbox');
-			
-			// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
-			$gen_time = get_site_option('cets_theme_info_data_freshness');
-
-	
-			if ((time() - $gen_time) > 3600 || strlen($gen_time) == 0) {
-				$this->generate_theme_blog_list();
-			}	
-				
+	if ( version_compare( $wp_version, '3.0', '>=' ) ) {
+		// Add the site admin config page
+		
+		if (function_exists('is_network_admin')) {
+			//3.1+
+			add_action('network_admin_menu', array(&$this, 'theme_info_add_page'));
 		}
+		else {
+			//-3.1
+			add_action('admin_menu', array(&$this, 'theme_info_add_page'));
+		}
+		
+		add_filter('theme_action_links', array(&$this, 'action_links'), 9, 2);
+		add_action('switch_theme', array(&$this, 'on_switch_theme'));
+		
+		if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
+				
+				wp_enqueue_script('jquery');
+				wp_enqueue_script('thickbox');
+				
+				// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
+				$gen_time = get_site_option('cets_theme_info_data_freshness');
 	
-	
+		
+				if ((time() - $gen_time) > 3600 || strlen($gen_time) == 0) {
+					$this->generate_theme_blog_list();
+				}	
+					
+			}
+		
+	}
 	}
 
 
@@ -156,9 +167,18 @@ function action_links($actions, $theme){
 function theme_info_add_page() {
 	// Add a submenu
 	if(is_site_admin()) {
-	$page=	add_submenu_page('wpmu-admin.php', 'Theme Usage Info', 'Theme Usage Info', 0, basename(__FILE__), array(&$this, 'theme_info_page'));
-	
+		
+		
+		if (function_exists('is_network_admin')) {
+			$page=	add_submenu_page('themes.php', 'Theme Usage Info', 'Theme Usage Info', 0, basename(__FILE__), array(&$this, 'theme_info_page'));
+		}
+		else{
+			$page=	add_submenu_page('wpmu-admin.php', 'Theme Usage Info', 'Theme Usage Info', 0, basename(__FILE__), array(&$this, 'theme_info_page'));
+		}
 	}
+	
+	
+	
 
 }
 
