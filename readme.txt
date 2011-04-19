@@ -40,4 +40,9 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 
 
 == Changelog ==
-1.1 Adding Show/Hide blogs on the administrative page.
+1.2 
+* Moved menu to Network -> Themes
+
+1.1 
+* Adding Show/Hide blogs on the administrative page.
+
