@@ -8,9 +8,9 @@ Plugin URI:
 
 Description: WordPress plugin for letting site admins easily see what themes are actively used on their site
 
-Version: 1.2
+Version: 1.5
 
-Author: Kevin Graeme & Deanna Schneider & Jason Lemahieu
+Author: Kevin Graeme, Deanna Schneider & Jason Lemahieu
 
 
 Copyright:
@@ -40,13 +40,12 @@ function cets_theme_info() {
 			add_action('admin_menu', array(&$this, 'theme_info_add_page'));
 		}
 		
-		add_filter('theme_action_links', array(&$this, 'action_links'), 9, 2);
+		add_filter('theme_action_links', array(&$this, 'action_links'), 9, 3);
 		add_action('switch_theme', array(&$this, 'on_switch_theme'));
 		
 		if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
 				
-				wp_enqueue_script('jquery');
-				wp_enqueue_script('thickbox');
+				add_action('admin_enqueue_scripts', array(&$this, 'cets_theme_info_admin_scripts_theme_page'));
 				
 				// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
 				$gen_time = get_site_option('cets_theme_info_data_freshness');
@@ -59,8 +58,13 @@ function cets_theme_info() {
 			}
 		
 	}
-	}
+}  // function cets_theme_info
 
+// added by Jason to properly enqueue scripts at right time
+function  cets_theme_info_admin_scripts_theme_page() {
+	wp_enqueue_script('jquery');
+	wp_enqueue_script('thickbox');
+}
 
 function generate_theme_blog_list() {
 	global $wpdb, $current_site;
@@ -82,7 +86,7 @@ function generate_theme_blog_list() {
 						
 			if (array_key_exists($ct, $processedthemes) == false) {
 				//echo ("<p> Blogid = " .  $blog->blog_id . " & current theme = " . $ct . "</p>");
-				$blogthemes[$ct][0] = array('blogid' => $blog->blog_id, 'path' => $path, 'domain' => $domain, 'name' => get_bloginfo('name'), 'blogurl' => $blogurl);	
+				$blogthemes[$ct][0] = array('blogid' => $blog->blog_id, /*'path' => $path, 'domain' => $domain,*/ 'name' => get_bloginfo('name'), 'blogurl' => $blogurl);	
 				$processedthemes[$ct] = true;
 				
 			}
@@ -90,7 +94,7 @@ function generate_theme_blog_list() {
 				//get the size of the current array of blogs
 				$count = sizeof($blogthemes[$ct]);
 				//echo ("<p> Blogid = " .  $blog->blog_id . " & current theme = " . $ct . "</p>");
-				$blogthemes["$ct"][$count] = array('blogid' => $blog->blog_id, 'path' => $path, 'domain' => $domain, 'name' => get_bloginfo('name'), 'blogurl' => $blogurl);
+				$blogthemes["$ct"][$count] = array('blogid' => $blog->blog_id,/* 'path' => $path, 'domain' => $domain,*/ 'name' => get_bloginfo('name'), 'blogurl' => $blogurl);
 				
 			}			
 			
@@ -98,31 +102,42 @@ function generate_theme_blog_list() {
 			}
 		}
 	// Set the site option to hold all this
-	add_site_option('cets_theme_info_data', $blogthemes);
+	update_site_option('cets_theme_info_data', $blogthemes);
 	
-	add_site_option('cets_theme_info_data_freshness', time());
+	update_site_option('cets_theme_info_data_freshness', time());
 	
 	
 }
 
+//apply_filters( 'theme_action_links', array_filter( $actions ), $theme_key, $theme, $context ); 
+function action_links($actions, $theme_key, $theme=''){
 
-function action_links($actions, $theme){
 	// Get the toggle to see if users can view this information
 	$allow = get_site_option('cets_theme_info_allow');
 	
 	// if it's not the site admin and users aren't allowed to be in here, just get out.
-	if ($allow != 1 && !is_site_admin()) {
+	if ($allow != 1 && !is_super_admin()) {
 		return $actions;
 	}
-	
-	
+		
+	if (is_array($theme_key)) {
+		//theme choosing page
+		$actual_theme_key = $theme_key['Template'];
+		$theme = $theme_key;
+		$theme_key = $actual_theme_key;
+	}
+		
 	//get the list of blogs for this theme
 	$data = get_site_option('cets_theme_info_data');
-	$blogs = $data[$theme['Name']];
+		
+	if (isset($data[$theme['Name']])) {
+		$blogs = $data[$theme['Name']];
+	} else {
+		$blogs = array();
+	}
 	
-	
-	// get the first param of the actions var and add some more stuff before it
-	$start = $actions[0];
+	// get the first param of the actions var and add some more stuff before it	
+	//$start = $actions[0];
 	$name = str_replace(" ", "_", $theme['Name']);
 	$text = "<div class='cets_theme_info'>Used on ";
 	 if (sizeOf($blogs) > 0) {
@@ -148,15 +163,13 @@ function action_links($actions, $theme){
 		$text .= "</li>";
 		$text .= "</div></div>";
 		
-		
-
-		
-		
 	} 
 	$text .='</div>';
 	
-	$text .= $start;
-	$actions[0] = $text;
+	//$text .= $start;
+	//$actions[0] = $text;
+	
+	array_push($actions, $text);
 	
 	return $actions;
 	
@@ -166,14 +179,14 @@ function action_links($actions, $theme){
 // Create a function to add a menu item for site admins
 function theme_info_add_page() {
 	// Add a submenu
-	if(is_site_admin()) {
+	if(is_super_admin()) {
 		
 		
 		if (function_exists('is_network_admin')) {
-			$page=	add_submenu_page('themes.php', 'Theme Usage Info', 'Theme Usage Info', 0, basename(__FILE__), array(&$this, 'theme_info_page'));
+			$page=	add_submenu_page('themes.php', 'Theme Usage Info', 'Theme Usage Info', 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));
 		}
 		else{
-			$page=	add_submenu_page('wpmu-admin.php', 'Theme Usage Info', 'Theme Usage Info', 0, basename(__FILE__), array(&$this, 'theme_info_page'));
+			$page=	add_submenu_page('wpmu-admin.php', 'Theme Usage Info', 'Theme Usage Info', 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));
 		}
 	}
 	
@@ -189,7 +202,7 @@ function theme_info_add_page() {
 function theme_info_page(){
 	
 	//Handle updates
-    	if ($_POST['action'] == 'update') {
+    	if (isset($_POST['action']) && $_POST['action'] == 'update') {
 			update_site_option('cets_theme_info_allow', $_POST['usage_flag']);
 		?>
         	<div id="message" class="updated fade"><p><?php _e('Options saved.') ?></p></div>
@@ -202,7 +215,7 @@ function theme_info_page(){
 	// if it's not set, set it to zero (the default)
 	if (strlen($usage_flag) == 0) {
 		$usage_flag = 0;
-		add_site_option('cets_theme_info_allow', 0);
+		update_site_option('cets_theme_info_allow', 0);
 	}
 	
 	
