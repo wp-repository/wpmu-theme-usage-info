@@ -1,21 +1,15 @@
 <?php
-
 /******************************************************************************************************************
  
 Plugin Name: Theme Info
-
-Plugin URI:
-
+Plugin URI: http://wordpress.org/extend/plugins/wpmu-theme-usage-info/
 Description: WordPress plugin for letting site admins easily see what themes are actively used on their site
-
-Version: 1.5
-
+Version: 1.7
 Author: Kevin Graeme, Deanna Schneider & Jason Lemahieu
-
 
 Copyright:
 
-    Copyright 2009 Board of Regents of the University of Wisconsin System
+    Copyright 2009 - 2012 Board of Regents of the University of Wisconsin System
 	Cooperative Extension Technology Services
 	University of Wisconsin-Extension
 
@@ -28,24 +22,17 @@ class cets_Theme_Info {
 function cets_theme_info() {
 	global $wp_version;
 	
-	if ( version_compare( $wp_version, '3.0', '>=' ) ) {
-		// Add the site admin config page
-		
-		if (function_exists('is_network_admin')) {
-			//3.1+
-			add_action('network_admin_menu', array(&$this, 'theme_info_add_page'));
-		}
-		else {
-			//-3.1
-			add_action('admin_menu', array(&$this, 'theme_info_add_page'));
-		}
-		
+
+		add_action('network_admin_menu', array(&$this, 'theme_info_add_page'));
+				
 		add_filter('theme_action_links', array(&$this, 'action_links'), 9, 3);
 		add_action('switch_theme', array(&$this, 'on_switch_theme'));
 		
 		if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
 				
 				add_action('admin_enqueue_scripts', array(&$this, 'cets_theme_info_admin_scripts_theme_page'));
+				
+				add_action('admin_enqueue_styles', array(&$this, 'cets_theme_info_admin_styles_theme_page'));
 				
 				// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
 				$gen_time = get_site_option('cets_theme_info_data_freshness');
@@ -55,19 +42,55 @@ function cets_theme_info() {
 					$this->generate_theme_blog_list();
 				}	
 					
-			}
+		}
 		
-	}
+	
 }  // function cets_theme_info
 
 // added by Jason to properly enqueue scripts at right time
 function  cets_theme_info_admin_scripts_theme_page() {
 	wp_enqueue_script('jquery');
 	wp_enqueue_script('thickbox');
+	wp_enqueue_style('thickbox');
+}
+
+function maybe_update() {
+	$this_version = "1.6";
+	$plugin_version = get_site_option('cets_theme_info_version', 0);
+	
+	if (version_compare($plugin_version, $this_version, '<')) {
+		add_site_option('cets_theme_info_data_freshness', 1);
+		update_site_option('cets_theme_info_data_freshness', 2);
+	}
+	
+	
+	if ($plugin_version == 0) {
+		add_site_option('cets_theme_info_version', $this_version);
+	} else {
+		update_site_option('cets_theme_info_version', $this_version);
+	}
+	
+	
+}
+
+function version_supported() {
+	global $wp_version;
+	$supported_minimum = "3.4";
+	
+	if (version_compare($wp_version, $supported_minimum, '<')) {
+		return false;
+	} else {
+		return true;
+	}
+	
 }
 
 function generate_theme_blog_list() {
-	global $wpdb, $current_site;
+	global $wpdb, $current_site, $wp_version;
+		
+	if (!$this->version_supported()) {
+		return;
+	}
 		
 		//require_once('admin.php');
 		$blogs  = $wpdb->get_results("SELECT blog_id, domain, path FROM " . $wpdb->blogs . " WHERE site_id = {$current_site->id} ORDER BY domain ASC");
@@ -76,7 +99,8 @@ function generate_theme_blog_list() {
 		if ($blogs) {
 		foreach ($blogs as $blog) {
 			switch_to_blog($blog->blog_id);
-			$ct = get_current_theme();
+			$cto = wp_get_theme();
+			$ct = $cto->stylesheet;
 			
 			if( constant( 'VHOST' ) == 'yes' ) {
 				$blogurl = $blog->domain;
@@ -103,14 +127,22 @@ function generate_theme_blog_list() {
 		}
 	// Set the site option to hold all this
 	update_site_option('cets_theme_info_data', $blogthemes);
-	
 	update_site_option('cets_theme_info_data_freshness', time());
-	
-	
+
 }
 
-//apply_filters( 'theme_action_links', array_filter( $actions ), $theme_key, $theme, $context ); 
-function action_links($actions, $theme_key, $theme=''){
+
+
+// $actions       = apply_filters( 'theme_action_links', $actions, $theme );
+function action_links($actions, $theme){
+
+	if (!$this->version_supported()) {
+		return $actions;
+	}
+
+	if (!is_object($theme)) {
+		$theme = wp_get_theme($theme);
+	}
 
 	// Get the toggle to see if users can view this information
 	$allow = get_site_option('cets_theme_info_allow');
@@ -120,30 +152,25 @@ function action_links($actions, $theme_key, $theme=''){
 		return $actions;
 	}
 		
-	if (is_array($theme_key)) {
-		//theme choosing page
-		$actual_theme_key = $theme_key['Template'];
-		$theme = $theme_key;
-		$theme_key = $actual_theme_key;
-	}
 		
 	//get the list of blogs for this theme
 	$data = get_site_option('cets_theme_info_data');
-		
-	if (isset($data[$theme['Name']])) {
-		$blogs = $data[$theme['Name']];
+	
+	
+	if (isset($data[$theme->stylesheet])) {
+		$blogs = $data[$theme->stylesheet];
 	} else {
 		$blogs = array();
 	}
-	
+		
 	// get the first param of the actions var and add some more stuff before it	
 	//$start = $actions[0];
 	$name = str_replace(" ", "_", $theme['Name']);
 	$text = "<div class='cets_theme_info'>Used on ";
 	 if (sizeOf($blogs) > 0) {
-	 	$text .=' <a href="#TB_inline?height=155&width=300&inlineId='. $name . '" class="thickbox" title="Blogs that use this theme">';
+	 	$text .=' <a href="#TB_inline?height=155&width=300&inlineId='. $name . '" class="thickbox" title="Sites that use this theme">';
 	 }
-	$text .= sizeOf($blogs) . " blog";
+	$text .= sizeOf($blogs) . " site";
 	if (sizeOf($blogs) != 1) {$text .= 's';}
 	if (sizeOf($blogs)> 0 ) {
 		$text .= '</a>';
@@ -154,7 +181,7 @@ function action_links($actions, $theme_key, $theme=''){
 		$text .= '<div id="' . $name . '" style="display: none"><div>';
 		
 		// loop through the list of blogs and display their titles
-		$text .=("Activated on the following blogs: <ul>");
+		$text .=("Activated on the following sites: <ul>");
 		foreach ($blogs as $blog){
 			$text .= '<li><a href="http://' . $blog['blogurl'] . '" target="new">' . $blog['name'] . '</a></li>';
 			
@@ -165,22 +192,18 @@ function action_links($actions, $theme_key, $theme=''){
 		
 	} 
 	$text .='</div>';
-	
-	//$text .= $start;
-	//$actions[0] = $text;
-	
+		
 	array_push($actions, $text);
 	
 	return $actions;
 	
-	}
+}
 	
 
 // Create a function to add a menu item for site admins
 function theme_info_add_page() {
 	// Add a submenu
 	if(is_super_admin()) {
-		
 		
 		if (function_exists('is_network_admin')) {
 			$page=	add_submenu_page('themes.php', 'Theme Usage Info', 'Theme Usage Info', 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));
@@ -189,17 +212,19 @@ function theme_info_add_page() {
 			$page=	add_submenu_page('wpmu-admin.php', 'Theme Usage Info', 'Theme Usage Info', 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));
 		}
 	}
-	
-	
-	
-
 }
-
 
 
 
 // Create a function to actually display stuff on theme usage
 function theme_info_page(){
+	
+	$this->maybe_update();
+	
+	if (!$this->version_supported()) {
+		echo "<div class='wrap'><h2>Theme Usage Information</h2>This plugin requires at least WordPress version 3.4 - Please upgrade to stay safe and secure.</div>";
+		return;
+	}
 	
 	//Handle updates
     	if (isset($_POST['action']) && $_POST['action'] == 'update') {
@@ -218,7 +243,6 @@ function theme_info_page(){
 		update_site_option('cets_theme_info_allow', 0);
 	}
 	
-	
 	// Get the time when the theme list was last generated
 	$gen_time = get_site_option('cets_theme_info_data_freshness');
 	
@@ -226,16 +250,19 @@ function theme_info_page(){
 		// if older than an hour, regenerate, just to be safe
 			$this->generate_theme_blog_list();	
 	}
-	$allowed_themes = get_site_allowed_themes();
-	$themes = get_themes();
+	$allowed_themes = WP_Theme::get_allowed_on_network();
+	
+	// returns an array of Theme Objects
+	$themes = wp_get_themes();
+	
 	$list = get_site_option('cets_theme_info_data');
 	ksort($list);
-
 	
 	// figure out what themes have not been used at all
 	$unused_themes = array();
 	foreach($themes as $theme){
-		if (!array_key_exists($theme['Name'], $list)){
+		if (!array_key_exists($theme->stylesheet, $list)) {
+		//if (!array_key_exists($theme['Name'], $list)){
 			array_push($unused_themes, $theme);
 			
 		}
@@ -280,13 +307,20 @@ function theme_info_page(){
 	<?php
 	$counter = 0;
 	foreach ($list as $theme => $blogs){
+		
+
+		$theme_object = wp_get_theme($theme);
 		$counter = $counter + 1;
-		echo('<tr valign="top"><td>' .$theme .'</td><td>');
+		echo('<tr valign="top"><td>' .$theme_object->name .'</td><td>');
+		
 		
 		// get the array for this theme
 		$thisTheme = $themes[$theme];
-		if (array_key_exists($thisTheme['Stylesheet'], $allowed_themes)) { echo ("Yes");}
-		else {echo ("No");}
+		if (array_key_exists($thisTheme['Stylesheet'], $allowed_themes)) { 
+			echo ("Yes");
+		}else {
+			echo ("No");
+		}
 		echo ('</td><td>' . sizeOf($blogs) . '</td><td>');
 		
 		?>
@@ -308,11 +342,7 @@ function theme_info_page(){
 			}
 			
 		echo ('</ul></td>');
-		
-		
-		
-		
-		
+
 	}
 	?>
 		</tbody>
@@ -370,8 +400,10 @@ function theme_info_page(){
 }
 
 function on_switch_theme() {
+	if (!$this->version_supported()) {
+		return;
+	}
 	$this->generate_theme_blog_list();
-	
 }
 
 
@@ -379,7 +411,3 @@ function on_switch_theme() {
 
 
 add_action( 'plugins_loaded', create_function( '', 'global $cets_Theme_Info; $cets_Theme_Info = new cets_Theme_Info();' ) );
-
-
-
-?>

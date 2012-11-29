@@ -1,8 +1,8 @@
 === WPMU Theme Info ===
 Contributors: DeannaS, kgraeme, MadtownLems
 Tags: WPMU, Wordpress Mu, Wordpress Multiuser, Theme Stats 
-Requires at least: 3.0
-Tested up to: 3.1.1
+Requires at least: 3.4
+Tested up to: 3.4.2
 Stable tag: trunk
 
 
@@ -15,9 +15,9 @@ Included files:
 * cets\_theme\_info.php
 * cets\_theme\_info folder - lib folder - tablesort.js
 
-WPMU has two ways to activate themes either sitewide, or on a blog-by-blog basis. But, there's no convenient way built-in to know which themes are actually being used, or by whom. This plugin addresses that issue by creating a "Theme Usage Info" sub-menu of the Site Admin menu. Included on the page are two tables of data - one of themes currently being used, and one of themes not currently being used. The currently used themes table provides information on how many blogs are using the theme, which blogs are using it, and whether or not the theme is currently activated site-wide. The table of unused themes provides information on whether the theme is currently activated sitewide.
+WordPress Multisite has two ways to activate themes either sitewide, or on a blog-by-blog basis. But, there's no convenient way built-in to know which themes are actually being used, or by whom. This plugin addresses that issue by creating a "Theme Usage Info" sub-menu of the Network Admin theme menu. Included on the page are two tables of data - one of themes currently being used, and one of themes not currently being used. The currently used themes table provides information on how many blogs are using the theme, which blogs are using it, and whether or not the theme is currently activated site-wide. The table of unused themes provides information on whether the theme is currently activated sitewide.
 
-In addition, site admins can choose to provide this information to their users via a toggle on the administration page.
+In addition, network admins can choose to provide this information to their users via a toggle on the administration page.
 
 If enabled, users will be able to view data on theme usage in Appearance -> themes for every theme except the currently activated theme. A single line of text is added just before the activate link indicating how many blogs are currently using the theme. When clicked, a scrolling list of themes is displayed in a thickbox:
 
@@ -31,8 +31,8 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 
 == Screenshots ==
 
-1. Adminstrator view of list of used and unused themes.
-2. Administrator view of list toggle controls for user access.
+1. Network Admin view of list of used and unused themes.
+2. Network Admin view of list toggle controls for user access.
 3. User view of theme popularity information.
 4. User view of blogs using theme.
 
@@ -40,4 +40,13 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 
 
 == Changelog ==
+
+1.7 Updated for 3.4. Because of the massive Theme info API change with 3.4, this plugin now REQURES 3.4+ to function
+
+1.2 - 1.6 Unkown exactly because I wasn't maintaining this plugin for public use for these versions, but the following occurred in here:
+ - Properly enqueue scripts
+ - Updated for 3.1.  Then later dropped support for anything below 3.4
+ - fixed lots of notices and warnings
+ - properly store data after the 3.3 add_site_option changes
+
 1.1 Adding Show/Hide blogs on the administrative page.
