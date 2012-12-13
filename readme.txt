@@ -1,13 +1,13 @@
 === WPMU Theme Info ===
 Contributors: DeannaS, kgraeme, MadtownLems
-Tags: WPMU, Wordpress Mu, Wordpress Multiuser, Theme Stats 
+Tags: Wordpress Multiuser, Themes 
 Requires at least: 3.4
-Tested up to: 3.4.2
+Tested up to: 3.5
 Stable tag: trunk
 
 
 
-Provides info to site admins and users on popularity of themes. 
+Provides info to network admins and users on popularity of themes. 
 
 == Description ==
 Included files:
@@ -40,6 +40,8 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 
 
 == Changelog ==
+
+1.8 Added a check for making sure the Theme Files are present, and will display a message if there is a site using a theme that no longer exists
 
 1.7 Updated for 3.4. Because of the massive Theme info API change with 3.4, this plugin now REQURES 3.4+ to function
 

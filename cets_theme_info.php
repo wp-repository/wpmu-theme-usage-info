@@ -3,8 +3,8 @@
  
 Plugin Name: Theme Info
 Plugin URI: http://wordpress.org/extend/plugins/wpmu-theme-usage-info/
-Description: WordPress plugin for letting site admins easily see what themes are actively used on their site
-Version: 1.7
+Description: WordPress plugin for letting network admins easily see what themes are actively used on the network
+Version: 1.8
 Author: Kevin Graeme, Deanna Schneider & Jason Lemahieu
 
 Copyright:
@@ -20,29 +20,27 @@ class cets_Theme_Info {
 
 
 function cets_theme_info() {
-	global $wp_version;
 	
+	add_action('network_admin_menu', array(&$this, 'theme_info_add_page'));
+			
+	add_filter('theme_action_links', array(&$this, 'action_links'), 9, 3);
+	add_action('switch_theme', array(&$this, 'on_switch_theme'));
+	
+	if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
+			
+			add_action('admin_enqueue_scripts', array(&$this, 'cets_theme_info_admin_scripts_theme_page'));
+			
+			add_action('admin_enqueue_styles', array(&$this, 'cets_theme_info_admin_styles_theme_page'));
+			
+			// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
+			$gen_time = get_site_option('cets_theme_info_data_freshness');
 
-		add_action('network_admin_menu', array(&$this, 'theme_info_add_page'));
-				
-		add_filter('theme_action_links', array(&$this, 'action_links'), 9, 3);
-		add_action('switch_theme', array(&$this, 'on_switch_theme'));
-		
-		if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
-				
-				add_action('admin_enqueue_scripts', array(&$this, 'cets_theme_info_admin_scripts_theme_page'));
-				
-				add_action('admin_enqueue_styles', array(&$this, 'cets_theme_info_admin_styles_theme_page'));
-				
-				// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
-				$gen_time = get_site_option('cets_theme_info_data_freshness');
 	
-		
-				if ((time() - $gen_time) > 3600 || strlen($gen_time) == 0) {
-					$this->generate_theme_blog_list();
-				}	
-					
-		}
+			if ((time() - $gen_time) > 3600 || strlen($gen_time) == 0) {
+				$this->generate_theme_blog_list();
+			}	
+				
+	}
 		
 	
 }  // function cets_theme_info
@@ -205,12 +203,8 @@ function theme_info_add_page() {
 	// Add a submenu
 	if(is_super_admin()) {
 		
-		if (function_exists('is_network_admin')) {
-			$page=	add_submenu_page('themes.php', 'Theme Usage Info', 'Theme Usage Info', 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));
-		}
-		else{
-			$page=	add_submenu_page('wpmu-admin.php', 'Theme Usage Info', 'Theme Usage Info', 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));
-		}
+		$page=	add_submenu_page('themes.php', 'Theme Usage Info', 'Theme Usage Info', 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));
+
 	}
 }
 
@@ -315,11 +309,17 @@ function theme_info_page(){
 		
 		
 		// get the array for this theme
-		$thisTheme = $themes[$theme];
-		if (array_key_exists($thisTheme['Stylesheet'], $allowed_themes)) { 
-			echo ("Yes");
-		}else {
-			echo ("No");
+		if (isset($themes[$theme])) {
+			$thisTheme = $themes[$theme];
+			
+			if (array_key_exists($thisTheme['Stylesheet'], $allowed_themes)) { 
+				echo ("Yes");
+			} else {
+				echo ("No");
+			}
+		} else {
+
+			echo ("Theme Files Not Found!");
 		}
 		echo ('</td><td>' . sizeOf($blogs) . '</td><td>');
 		
