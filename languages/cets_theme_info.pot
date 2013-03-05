@@ -1,0 +1,101 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/wp\n"
+"POT-Creation-Date: 2012-12-17 13:38:53+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: cets_theme_info.php:6
+msgid "WordPress plugin for letting network admins easily see what themes are actively used on the network"
+msgstr ""
+
+#: cets_theme_info.php:172
+msgid "Used on"
+msgstr ""
+
+#: cets_theme_info.php:174
+msgid "Sites that use this theme"
+msgstr ""
+
+#: cets_theme_info.php:176
+msgid "site"
+msgstr ""
+
+#: cets_theme_info.php:187
+msgid "Activated on the following sites:"
+msgstr ""
+
+#: cets_theme_info.php:211
+msgid "Theme Usage Info"
+msgstr ""
+
+#: cets_theme_info.php:224
+msgid ""
+"Theme Usage Information %s This plugin requires at least WordPress version "
+"3.4 - Please upgrade to stay safe and secure."
+msgstr ""
+
+#: cets_theme_info.php:231
+msgid "Options saved."
+msgstr ""
+
+#: cets_theme_info.php:292
+msgid "Theme Usage Information"
+msgstr ""
+
+#: cets_theme_info.php:297
+msgid "Used Themes"
+msgstr ""
+
+#: cets_theme_info.php:298 cets_theme_info.php:359
+msgid "Activated Sitewide"
+msgstr ""
+
+#: cets_theme_info.php:299 cets_theme_info.php:360
+msgid "Total Blogs"
+msgstr ""
+
+#: cets_theme_info.php:300
+msgid "Blog Titles"
+msgstr ""
+
+#: cets_theme_info.php:320 cets_theme_info.php:369 cets_theme_info.php:384
+msgid "Yes"
+msgstr ""
+
+#: cets_theme_info.php:322 cets_theme_info.php:370 cets_theme_info.php:385
+msgid "No"
+msgstr ""
+
+#: cets_theme_info.php:326
+msgid "Theme Files Not Found!"
+msgstr ""
+
+#: cets_theme_info.php:358
+msgid "Unused Themes"
+msgstr ""
+
+#: cets_theme_info.php:377
+msgid "Manage User Access"
+msgstr ""
+
+#: cets_theme_info.php:378
+msgid ""
+"Users can see usage information for themes in Appearance -> Themes. You can "
+"control user access to that information via this toggle."
+msgstr ""
+
+#: cets_theme_info.php:383
+msgid "Let Users View Theme Usage Information:"
+msgstr ""
+
+#: cets_theme_info.php:394
+msgid "Save Changes"
+msgstr ""

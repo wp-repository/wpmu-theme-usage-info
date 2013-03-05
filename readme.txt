@@ -23,6 +23,7 @@ If enabled, users will be able to view data on theme usage in Appearance -> them
 
 Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-stats/">Ron and Andrea</a> for their prior work in this area.
 
+Contribute Translations at [https://translate.foe-services.de/projects/cets_theme_info](https://translate.foe-services.de/projects/cets_theme_info)
 
 == Installation ==
 
