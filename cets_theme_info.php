@@ -4,14 +4,14 @@ Plugin Name:    Theme Info
 Plugin URI:     http://wordpress.org/extend/plugins/wpmu-theme-usage-info/
 Description:    WordPress plugin for letting network admins easily see what themes are actively used on the network
 Version:        1.8
-Author:         <a href="#" target="_target">Kevin Graeme</a>, <a href="#" target="_target">Deanna Schneider</a> & <a href="#" target="_target">Jason Lemahieu</a>
+Author:         Kevin Graeme, <a href="http://deannaschneider.wordpress.com/" target="_target">Deanna Schneider</a> & <a href="http://www.jasonlemahieu.com/" target="_target">Jason Lemahieu</a>
 License:        TBD
 License URI:    TBD
 Text Domain:    cets_theme_info
 Domain Path:    /languages/
 
 Copyright:
-    Copyright 2009 - 2012 Board of Regents of the University of Wisconsin System
+    Copyright 2009 - 2013 Board of Regents of the University of Wisconsin System
 	Cooperative Extension Technology Services
 	University of Wisconsin-Extension        
 */
@@ -206,7 +206,7 @@ class cets_Theme_Info {
 
 
         // Create a function to actually display stuff on theme usage
-        function theme_info_page(){
+        function theme_info_page( $active_tab = '' ) {
 
                 $this->maybe_update();
 
@@ -259,132 +259,217 @@ class cets_Theme_Info {
                 ?>
                 <!-- Some extra CSS -->
                 <style type="text/css">
+                        .tab-body {
+                            padding: 10px;
+                            border-style: solid;
+                            border-width: 0 1px 1px 1px;
+                            border-color: #CCCCCC;
+                        }
                         .bloglist {
-                                display:none;
+                            display:none;
                         }
                         .pc_settings_heading {
-                                text-align: center; 
-                                border-right:  3px solid black;
-                                border-left: 3px solid black;
-
+                            text-align: center; 
+                            border-right:  3px solid black;
+                            border-left: 3px solid black;
                         }
                         .pc_settings_left {
-                                border-left: 3px solid black;
+                            border-left: 3px solid black;
                         }
                         .pc_settings_right {
-                                border-right: 3px solid black;
+                            border-right: 3px solid black;
                         }
                         .widefat tbody tr:hover td, .table-hover tbody tr:hover th {
-                        background-color: #DDD;
+                            background-color: #DDD;
                         }
                 </style>
                 <div class="wrap">
                         <?php screen_icon( 'themes' ); ?>
                         <h2><?php _e( 'Theme Usage Information', 'cets_theme_info'); ?></h2>
-                        <table class="widefat" id="cets_active_themes">
-                            <thead>
-                                    <tr>
-                                            <th class="nocase"><?php _e( 'Used Themes', 'cets_theme_info'); ?></th>
-                                            <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets_theme_info'); ?></th>
-                                            <th class="num"><?php _e( 'Total Blogs', 'cets_theme_info'); ?></th>
-                                            <th><?php _e( 'Blog Titles', 'cets_theme_info'); ?></th>
-
-                                    </tr>
-                            </thead>
-                            <tbody id="themes">
-                                <?php
-                                $counter = 0;
-                                foreach ($list as $theme => $blogs){
-
-
-                                        $theme_object = wp_get_theme($theme);
-                                        $counter = $counter + 1;
-                                        echo('<tr valign="top"><td>' .$theme_object->name .'</td><td class="num">');
-
-
-                                        // get the array for this theme
-                                        if (isset($themes[$theme])) {
-                                                $thisTheme = $themes[$theme];
-
-                                                if (array_key_exists($thisTheme['Stylesheet'], $allowed_themes)) { 
-                                                        _e( 'Yes', 'cets_theme_info');
-                                                } else {
-                                                        _e( 'No', 'cets_theme_info'); 
-                                                }
-                                        } else {
-
-                                                _e( 'Theme Files Not Found!', 'cets_theme_info');
-                                        }
-                                        echo ('</td><td class="num">' . sizeOf($blogs) . '</td><td>');
-
-                                        ?>
-                                        <a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo $counter; ?>').toggle(400);"><?php _e( 'Show/Hide Blogs', 'cets_theme_info'); ?></a>
-
-
-                                        <?php
-                                        echo ('<ul class="bloglist" id="bloglist_' . $counter  . '">');
-                                        foreach($blogs as $key => $row){
-                                                        $name[$key] = $row['name'];
-                                                        $blogurl[$key] = $row['blogurl'];
-                                                }
-                                                if (sizeOf($name) == sizeOf($blogs)){
-                                                        array_multisort($name, SORT_ASC, $blogs);
-                                                }
-
-                                                foreach($blogs as $blog){
-                                                        echo ('<li><a href="http://' . $blog['blogurl'] . '" target="new">' . $blog['name'] . '</a></li>');
-                                                }
-
-                                        echo ('</ul></td>');
-
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                        <p>&nbsp;</p>
-                        <table class="widefat">
-                            <thead>
-                                <tr>
-                                    <th class="nocase"><?php _e( 'Unused Themes', 'cets_theme_info'); ?></th>
-                                    <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets_theme_info'); ?></th>
-                                    <th class="num"><?php _e( 'Total Blogs', 'cets_theme_info'); ?></th>
-                                    <th>&nbsp;</th>
-                                </tr>
-                            </thead>
-                            <tbody id="plugins">
-                            <?php
-                            asort($unused_themes);
-                            foreach($unused_themes as $theme) {
-                                    echo ("<tr><td>" . $theme['Name'] . "</td><td class=\"num\">");
-                                    if (array_key_exists($theme['Stylesheet'], $allowed_themes)) { _e( 'Yes', 'cets_theme_info'); }
-                                    else { _e( 'No', 'cets_theme_info'); }
-                                    echo("</td><td class=\"num\">0</td><td>&nbsp;</td></tr>");
-                            }
-                            ?>	
-                            </tbody>
-                        </table>
-
-                        <h2><?php _e( 'Manage User Access', 'cets_theme_info'); ?></h2>
-                        <p><?php _e( 'Users can see usage information for themes in Appearance -> Themes. You can control user access to that information via this toggle.', 'cets_theme_info'); ?></p>
-                        <form name="themeinfoform" action="" method="post">
-                            <table class="form-table">
-                                <tbody>
-                                    <tr valign="top">
-                                        <th scope="row"><?php _e( 'Let Users View Theme Usage Information:', 'cets_theme_info'); ?> </th>
-                                        <td>
-                                            <label><input type="radio" name="usage_flag" value="1" <?php checked('1', $usage_flag) ?> /> <?php _e( 'Yes', 'cets_theme_info') ?></label><br/>
-                                            <label><input type="radio" name="usage_flag" value="0" <?php checked('0', $usage_flag) ?> /> <?php _e( 'No', 'cets_theme_info') ?></label>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>		
+                        
+                        <?php
+                        if (isset($_GET['tab'])) {
+                            $active_tab = $_GET['tab'];
+                        } else if ($active_tab == 'about') {
+                            $active_tab = 'about';
+                        } else if ($active_tab == 'settings') {
+                            $active_tab = 'settings';
+                        } else {
+                            $active_tab = 'themes';
+                        } // end if/else 
+                        ?>
+                        
+                        <h2 class="nav-tab-wrapper">
+                            <a href="?page=cets_theme_info.php&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Themes', 'cets_theme_info'); ?></a>
+                            <a href="?page=cets_theme_info.php&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', 'cets_theme_info'); ?></a>
+                            <a href="?page=cets_theme_info.php&tab=about" class="nav-tab <?php echo $active_tab == 'about' ? 'nav-tab-active' : ''; ?>"><?php _e( 'About', 'cets_theme_info'); ?></a>
+                        </h2>
+                        
+                        <?php if ($active_tab == 'about') { ?>
+                        
+                        <div class="tab-body">
+                            <h1>WPMU Theme Info</h1>
                             <p>
-                                <input type="hidden" name="action" value="update" />
-                                <input type="submit" class="button-primary" name="Submit" value="<?php _e( 'Save Changes' ); ?>" />
+                                <a href="http://wordpress.org/extend/plugins/wpmu-theme-usage-info/" target="_blank">WordPress.org</a> | 
+                                <a href="https://github.com/Foe-Services-Labs/wpmu-theme-usage-info" target="_blank">GitHub Repository</a> | 
+                                <a href="http://wordpress.org/support/plugin/wpmu-theme-usage-info" target="_blank">Issue Tracker</a>
                             </p>
-                        </form>
-                </div>
-            <?php
+
+                            <h3><?php _e( 'Development', 'cets_theme_info'); ?></h3>
+                            <ul>
+                                <li>Kevin Graeme | <a href="http://profiles.wordpress.org/kgraeme/" target="_blank">kgraeme@WP.org</a></li>
+                                <li><a href="http://deannaschneider.wordpress.com/" target="_blank">Deanna Schneider</a> | <a href="http://profiles.wordpress.org/deannas/" target="_blank">deannas@WP.org</a></li>
+                                <li><a href="http://www.jasonlemahieu.com/" target="_blank">Jason Lemahieu</a> | <a href="http://profiles.wordpress.org/MadtownLems/" target="_blank">MadtownLems@WP.org</a></li>
+                            </ul>
+
+                            <h3>WordPress</h3>
+                            <ul>
+                                <li><?php printf( __( 'Requires at least: %s', 'cets_theme_info'), '3.4'); ?></li>
+                                <li><?php printf( __( 'Tested up to: %s', 'cets_theme_info'), '3.5.1'); ?></li>
+                            </ul>
+
+                            <h3><?php _e( 'Languages', 'cets_theme_info'); ?></h3>
+                            <ul>
+                                <li><?php _e( 'English'); ?></li>
+                                <li><?php _e( 'German'); ?></li>
+                            </ul>
+                            <p><?php printf( __( 'Help to translate at %s', 'cets_theme_info'), '<a href="https://translate.foe-services.de/projects/cets_theme_info" target="_blank">https://translate.foe-services.de/projects/cets_theme_info</a>'); ?></p>
+
+                            <h3><?php _e( 'License', 'cets_theme_info'); ?></h3> 
+                            <p>Copyright 2009-2013 Board of Regents of the University of Wisconsin System<br />
+                            Cooperative Extension Technology Services<br />
+                            University of Wisconsin-Extension</p>
+                        </div>
+                        
+                        <?php } else if ($active_tab == 'settings') { ?>
+                            
+                        <div class="tab-body">
+                            <h2><?php _e('Manage User Access', 'cets_theme_info'); ?></h2>
+                            <p><?php _e('Users can see usage information for themes in Appearance -> Themes. You can control user access to that information via this toggle.', 'cets_theme_info'); ?></p>
+                            <form name="themeinfoform" action="" method="post">
+                                <table class="form-table">
+                                    <tbody>
+                                        <tr valign="top">
+                                            <th scope="row"><?php _e('Let Users View Theme Usage Information:', 'cets_theme_info'); ?> </th>
+                                            <td>
+                                                <label><input type="radio" name="usage_flag" value="1" <?php checked('1', $usage_flag) ?> /> <?php _e('Yes', 'cets_theme_info') ?></label><br/>
+                                                <label><input type="radio" name="usage_flag" value="0" <?php checked('0', $usage_flag) ?> /> <?php _e('No', 'cets_theme_info') ?></label>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>		
+                                <p>
+                                    <input type="hidden" name="action" value="update" />
+                                    <input type="submit" class="button-primary" name="Submit" value="<?php _e('Save Changes'); ?>" />
+                                </p>
+                            </form>
+                        </div>
+                        
+                        <?php } else { ?>
+                        
+                        <div class="tab-body">
+                            <table class="widefat" id="cets_active_themes">
+                                <thead>
+                                        <tr>
+                                                <th class="nocase"><?php _e( 'Used Themes', 'cets_theme_info'); ?></th>
+                                                <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets_theme_info'); ?></th>
+                                                <th class="num"><?php _e( 'Total Blogs', 'cets_theme_info'); ?></th>
+                                                <th><?php _e( 'Blog Titles', 'cets_theme_info'); ?></th>
+
+                                        </tr>
+                                </thead>
+                                <tbody id="themes">
+                                    <?php
+                                    $counter = 0;
+                                    foreach ($list as $theme => $blogs){
+
+
+                                            $theme_object = wp_get_theme($theme);
+                                            $counter = $counter + 1;
+                                            echo('<tr valign="top"><td>' .$theme_object->name .'</td><td class="num">');
+
+
+                                            // get the array for this theme
+                                            if (isset($themes[$theme])) {
+                                                    $thisTheme = $themes[$theme];
+
+                                                    if (array_key_exists($thisTheme['Stylesheet'], $allowed_themes)) { 
+                                                            _e( 'Yes', 'cets_theme_info');
+                                                    } else {
+                                                            _e( 'No', 'cets_theme_info'); 
+                                                    }
+                                            } else {
+
+                                                    _e( 'Theme Files Not Found!', 'cets_theme_info');
+                                            }
+                                            echo ('</td><td class="num">' . sizeOf($blogs) . '</td><td>');
+
+                                            ?>
+                                            <a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo $counter; ?>').toggle(400);"><?php _e( 'Show/Hide Blogs', 'cets_theme_info'); ?></a>
+
+
+                                            <?php
+                                            echo ('<ul class="bloglist" id="bloglist_' . $counter  . '">');
+                                            foreach($blogs as $key => $row){
+                                                            $name[$key] = $row['name'];
+                                                            $blogurl[$key] = $row['blogurl'];
+                                                    }
+                                                    if (sizeOf($name) == sizeOf($blogs)){
+                                                            array_multisort($name, SORT_ASC, $blogs);
+                                                    }
+
+                                                    foreach($blogs as $blog){
+                                                            echo ('<li><a href="http://' . $blog['blogurl'] . '" target="new">' . $blog['name'] . '</a></li>');
+                                                    }
+
+                                            echo ('</ul></td>');
+
+                                    }
+                                    ?>
+                                </tbody>
+                                <tfoot>
+                                        <tr>
+                                                <th class="nocase"><?php _e( 'Used Themes', 'cets_theme_info'); ?></th>
+                                                <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets_theme_info'); ?></th>
+                                                <th class="num"><?php _e( 'Total Blogs', 'cets_theme_info'); ?></th>
+                                                <th><?php _e( 'Blog Titles', 'cets_theme_info'); ?></th>
+
+                                        </tr>
+                                </tfoot>
+                            </table>
+                            <p>&nbsp;</p>
+                            <table class="widefat">
+                                <thead>
+                                    <tr>
+                                        <th class="nocase"><?php _e( 'Unused Themes', 'cets_theme_info'); ?></th>
+                                        <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets_theme_info'); ?></th>
+                                        <th class="num"><?php _e( 'Total Blogs', 'cets_theme_info'); ?></th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="plugins">
+                                <?php
+                                asort($unused_themes);
+                                foreach($unused_themes as $theme) {
+                                        echo ("<tr><td>" . $theme['Name'] . "</td><td class=\"num\">");
+                                        if (array_key_exists($theme['Stylesheet'], $allowed_themes)) { _e( 'Yes', 'cets_theme_info'); }
+                                        else { _e( 'No', 'cets_theme_info'); }
+                                        echo("</td><td class=\"num\">0</td><td>&nbsp;</td></tr>");
+                                }
+                                ?>	
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th class="nocase"><?php _e( 'Unused Themes', 'cets_theme_info'); ?></th>
+                                        <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets_theme_info'); ?></th>
+                                        <th class="num"><?php _e( 'Total Blogs', 'cets_theme_info'); ?></th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </tfoot>
+                            </table>                        
+                        </div>
+                
+            <?php }
         }
 
         function on_switch_theme() {
