@@ -28,8 +28,6 @@ class cets_Theme_Info {
 
                 if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
 
-                        add_action('admin_enqueue_scripts', array(&$this, 'enqueue_scripts_styles'));
-
                         // run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
                         $gen_time = get_site_option('cets_theme_info_data_freshness');
 
@@ -42,11 +40,6 @@ class cets_Theme_Info {
 
 
         }  // function cets_theme_info
-
-        // added by Jason to properly enqueue scripts at right time
-        function enqueue_scripts_styles() {
-                wp_enqueue_script('custom-script', plugins_url('js/tablesort-2.4.min.js', __FILE__), false, true);
-        }
 
         function maybe_update() {
                 $this_version = "1.8";
@@ -207,7 +200,9 @@ class cets_Theme_Info {
 
         // Create a function to actually display stuff on theme usage
         function theme_info_page( $active_tab = '' ) {
-
+                
+                wp_enqueue_script('custom-script', plugins_url('js/tablesort-2.4.min.js', __FILE__), false, true);
+            
                 $this->maybe_update();
 
                 if (!$this->version_supported()) {
