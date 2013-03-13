@@ -17,14 +17,22 @@ Copyright:
 */
 
 class cets_Theme_Info {
+        
+        /**
+        * PHP 4 constructor
+        */
+        function cets_Theme_Info() {
+           cets_Theme_Info::__construct();
+        }
+        
+        function __construct() {            
+                add_action( 'network_admin_menu', array(&$this, 'theme_info_add_page'));
 
-        function cets_theme_info() {
-            
+                add_filter( 'theme_action_links', array(&$this, 'action_links'), 9, 3);
+                add_action( 'switch_theme', array(&$this, 'on_switch_theme'));
+                add_action( 'admin_enqueue_scripts', array( &$this, 'load_scripts'));
+                
                 load_plugin_textdomain( 'cets_theme_info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-                add_action('network_admin_menu', array(&$this, 'theme_info_add_page'));
-
-                add_filter('theme_action_links', array(&$this, 'action_links'), 9, 3);
-                add_action('switch_theme', array(&$this, 'on_switch_theme'));
 
                 if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
 
@@ -199,10 +207,7 @@ class cets_Theme_Info {
 
 
         // Create a function to actually display stuff on theme usage
-        function theme_info_page( $active_tab = '' ) {
-                
-                wp_enqueue_script('custom-script', plugins_url('js/tablesort-2.4.min.js', __FILE__), false, true);
-            
+        function theme_info_page( $active_tab = '' ) {            
                 $this->maybe_update();
 
                 if (!$this->version_supported()) {
@@ -300,7 +305,10 @@ class cets_Theme_Info {
                             <a href="?page=cets_theme_info.php&tab=about" class="nav-tab <?php echo $active_tab == 'about' ? 'nav-tab-active' : ''; ?>"><?php _e( 'About', 'cets_theme_info'); ?></a>
                         </h2>
                         
-                        <?php if ($active_tab == 'about') { ?>
+                        <?php if ($active_tab == 'about') { 
+                                                        global $current_screen;
+                            print_r($current_screen);
+                            ?>
                         
                         <div class="tab-body">
                             <h1>WPMU Theme Info</h1>
@@ -473,7 +481,14 @@ class cets_Theme_Info {
                 }
                 $this->generate_theme_blog_list();
         }
-
+        function load_scripts() {
+                global $current_screen;
+                // todo limit loading to about tab
+                if ( $current_screen->id == 'themes_page_cets_theme_info-network' ) {
+                        wp_register_script( 'tablesort', plugins_url('js/tablesort-2.4.min.js', __FILE__), array(), '2.4', true);
+                        wp_enqueue_script( 'tablesort' );
+                }
+        } 
 
 }// end class
 
