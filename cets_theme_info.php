@@ -230,7 +230,7 @@ class cets_Theme_Info {
 		if ( isset($_POST['action']) && $_POST['action'] == 'update' ) {
 			update_site_option('cets_theme_info_allow', $_POST['usage_flag']);
 		?>
-			<div id="message" class="updated fade"><p><?php _e( 'Options saved.', 'cets-theme-info') ?></p></div>
+			<div id="message" class="updated fade"><p><?php _e( 'Settings saved.') ?></p></div>
 	   <?php
 		}
 
@@ -343,8 +343,8 @@ class cets_Theme_Info {
 							<tr>
 								<th class="nocase"><?php _e( 'Used Themes', 'cets-theme-info'); ?></th>
 								<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
-								<th class="num"><?php _e( 'Total Blogs', 'cets-theme-info'); ?></th>
-								<th><?php _e( 'Blog Titles', 'cets-theme-info'); ?></th>
+								<th class="num"><?php _e( 'Total Sites', 'cets-theme-info'); ?></th>
+								<th><?php _e( 'Site Titles', 'cets-theme-info'); ?></th>
 							</tr>
 						</thead>
 						<tbody id="themes">
@@ -369,7 +369,7 @@ class cets_Theme_Info {
 								}
 								echo ('</td><td class="num">' . sizeOf($blogs) . '</td><td>');
 								?>
-								<a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo $counter; ?>').toggle(400);"><?php _e( 'Show/Hide Blogs', 'cets-theme-info'); ?></a>
+								<a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo $counter; ?>').toggle(400);"><?php _e( 'Show/Hide Sites', 'cets-theme-info'); ?></a>
 								<?php
 								echo ('<ul class="bloglist" id="bloglist_' . $counter  . '">');
 								foreach ( $blogs as $key => $row ){
@@ -391,8 +391,8 @@ class cets_Theme_Info {
 							<tr>
 								<th class="nocase"><?php _e( 'Used Themes', 'cets-theme-info'); ?></th>
 								<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
-								<th class="num"><?php _e( 'Total Blogs', 'cets-theme-info'); ?></th>
-								<th><?php _e( 'Blog Titles', 'cets-theme-info'); ?></th>
+								<th class="num"><?php _e( 'Total Sites', 'cets-theme-info'); ?></th>
+								<th><?php _e( 'Site Titles', 'cets-theme-info'); ?></th>
 							</tr>
 						</tfoot>
 					</table>
@@ -402,7 +402,7 @@ class cets_Theme_Info {
 							<tr>
 								<th class="nocase"><?php _e( 'Unused Themes', 'cets-theme-info'); ?></th>
 								<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
-								<th class="num"><?php _e( 'Total Blogs', 'cets-theme-info'); ?></th>
+								<th class="num"><?php _e( 'Total Sites', 'cets-theme-info'); ?></th>
 								<th>&nbsp;</th>
 							</tr>
 						</thead>
@@ -425,7 +425,7 @@ class cets_Theme_Info {
 							<tr>
 								<th class="nocase"><?php _e( 'Unused Themes', 'cets-theme-info'); ?></th>
 								<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
-								<th class="num"><?php _e( 'Total Blogs', 'cets-theme-info'); ?></th>
+								<th class="num"><?php _e( 'Total Sites', 'cets-theme-info'); ?></th>
 								<th>&nbsp;</th>
 							</tr>
 						</tfoot>
