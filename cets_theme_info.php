@@ -30,7 +30,9 @@ class cets_Theme_Info {
 
                 add_filter( 'theme_action_links', array(&$this, 'action_links'), 9, 3);
                 add_action( 'switch_theme', array(&$this, 'on_switch_theme'));
-                add_action( 'admin_enqueue_scripts', array( &$this, 'load_scripts'));
+				
+				if ( is_network_admin() )
+					add_action( 'admin_enqueue_scripts', array( &$this, 'load_scripts'));
                 
                 load_plugin_textdomain( 'cets_theme_info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
@@ -198,7 +200,7 @@ class cets_Theme_Info {
         // Create a function to add a menu item for site admins
         function theme_info_add_page() {
                 // Add a submenu
-                if(is_super_admin()) {
+                if ( is_network_admin() ) {
                         $this->page = add_submenu_page( 'themes.php', __( 'Theme Usage Info', 'cets_theme_info'), __( 'Theme Usage Info', 'cets_theme_info'), 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));       
                 }
                 add_action("load-$this->page", array( &$this, 'help_tabs'));
@@ -234,11 +236,8 @@ class cets_Theme_Info {
                     <li><?php printf( __( 'Tested up to: %s', 'cets_theme_info'), '3.5.1'); ?></li>
                 </ul>
 
-                <h3><?php _e( 'Languages', 'cets_theme_info'); ?></h3>
-                <ul>
-                    <li><?php _e( 'English'); ?></li>
-                    <li><?php _e( 'German'); ?></li>
-                </ul>
+                <h3><?php _e( 'Languages', 'cets_theme_info'); ?>:</h3>
+                <p>English (development), German</p>
                 <p><?php printf( __( 'Help to translate at %s', 'cets_theme_info'), '<a href="https://translate.foe-services.de/projects/cets_theme_info" target="_blank">https://translate.foe-services.de/projects/cets_theme_info</a>'); ?></p>
 
                 <h3><?php _e( 'License', 'cets_theme_info'); ?></h3> 
