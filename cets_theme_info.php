@@ -34,7 +34,7 @@ class cets_Theme_Info {
 				if ( is_network_admin() )
 					add_action( 'admin_enqueue_scripts', array( &$this, 'load_scripts'));
                 
-                load_plugin_textdomain( 'cets_theme_info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+                load_plugin_textdomain( 'cets-theme-info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
                 if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
 
@@ -163,11 +163,11 @@ class cets_Theme_Info {
                 // get the first param of the actions var and add some more stuff before it	
                 //$start = $actions[0];
                 $name = str_replace(" ", "_", $theme['Name']);
-                $text = "<div class='cets_theme_info'>" . __( 'Used on', 'cets_theme_info') . " ";
+                $text = "<div class='cets-theme-info'>" . __( 'Used on', 'cets-theme-info') . " ";
                  if (sizeOf($blogs) > 0) {
-                        $text .='<a href="#TB_inline?height=155&width=300&inlineId='. $name . '" class="thickbox" title="' . __( 'Sites that use this theme', 'cets_theme_info') . '">';
+                        $text .='<a href="#TB_inline?height=155&width=300&inlineId='. $name . '" class="thickbox" title="' . __( 'Sites that use this theme', 'cets-theme-info') . '">';
                 }
-                $text .= sizeOf($blogs) . " " . __( 'site', 'cets_theme_info');
+                $text .= sizeOf($blogs) . " " . __( 'site', 'cets-theme-info');
                 if (sizeOf($blogs) != 1) {$text .= 's';}
                 if (sizeOf($blogs)> 0 ) {
                         $text .= '</a>';
@@ -178,7 +178,7 @@ class cets_Theme_Info {
                         $text .= '<div id="' . $name . '" style="display: none"><div>';
 
                         // loop through the list of blogs and display their titles
-                        $text .=( __( 'Activated on the following sites:', 'cets_theme_info') . " <ul>");
+                        $text .=( __( 'Activated on the following sites:', 'cets-theme-info') . " <ul>");
                         foreach ($blogs as $blog){
                                 $text .= '<li><a href="http://' . $blog['blogurl'] . '" target="new">' . $blog['name'] . '</a></li>';
 
@@ -201,7 +201,7 @@ class cets_Theme_Info {
         function theme_info_add_page() {
                 // Add a submenu
                 if ( is_network_admin() ) {
-                        $this->page = add_submenu_page( 'themes.php', __( 'Theme Usage Info', 'cets_theme_info'), __( 'Theme Usage Info', 'cets_theme_info'), 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));       
+                        $this->page = add_submenu_page( 'themes.php', __( 'Theme Usage Info', 'cets-theme-info'), __( 'Theme Usage Info', 'cets-theme-info'), 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));       
                 }
                 add_action("load-$this->page", array( &$this, 'help_tabs'));
         }
@@ -210,7 +210,7 @@ class cets_Theme_Info {
                 $screen = get_current_screen();
                 $screen->add_help_tab( array(
                     'id'        => 'cets_theme_info_about',
-                    'title'     => __('About', 'cets_theme_info'),
+                    'title'     => __('About', 'cets-theme-info'),
                     'callback'  => array( &$this, 'about_tab')
                 ));       
         }
@@ -223,7 +223,7 @@ class cets_Theme_Info {
                     <a href="http://wordpress.org/support/plugin/wpmu-theme-usage-info" target="_blank">Issue Tracker</a>
                 </p>
 
-                <h3><?php _e( 'Development', 'cets_theme_info'); ?></h3>
+                <h3><?php _e( 'Development', 'cets-theme-info'); ?></h3>
                 <ul>
                     <li>Kevin Graeme | <a href="http://profiles.wordpress.org/kgraeme/" target="_blank">kgraeme@WP.org</a></li>
                     <li><a href="http://deannaschneider.wordpress.com/" target="_blank">Deanna Schneider</a> | <a href="http://profiles.wordpress.org/deannas/" target="_blank">deannas@WP.org</a></li>
@@ -232,15 +232,15 @@ class cets_Theme_Info {
 
                 <h3>WordPress</h3>
                 <ul>
-                    <li><?php printf( __( 'Requires at least: %s', 'cets_theme_info'), '3.4'); ?></li>
-                    <li><?php printf( __( 'Tested up to: %s', 'cets_theme_info'), '3.5.1'); ?></li>
+                    <li><?php printf( __( 'Requires at least: %s', 'cets-theme-info'), '3.4'); ?></li>
+                    <li><?php printf( __( 'Tested up to: %s', 'cets-theme-info'), '3.5.1'); ?></li>
                 </ul>
 
-                <h3><?php _e( 'Languages', 'cets_theme_info'); ?>:</h3>
+                <h3><?php _e( 'Languages', 'cets-theme-info'); ?>:</h3>
                 <p>English (development), German</p>
-                <p><?php printf( __( 'Help to translate at %s', 'cets_theme_info'), '<a href="https://translate.foe-services.de/projects/cets_theme_info" target="_blank">https://translate.foe-services.de/projects/cets_theme_info</a>'); ?></p>
+                <p><?php printf( __( 'Help to translate at %s', 'cets-theme-info'), '<a href="https://translate.foe-services.de/projects/cets_theme_info" target="_blank">https://translate.foe-services.de/projects/cets_theme_info</a>'); ?></p>
 
-                <h3><?php _e( 'License', 'cets_theme_info'); ?></h3> 
+                <h3><?php _e( 'License', 'cets-theme-info'); ?></h3> 
                 <p>Copyright 2009-2013 Board of Regents of the University of Wisconsin System<br />
                 Cooperative Extension Technology Services<br />
                 University of Wisconsin-Extension</p>
@@ -252,14 +252,14 @@ class cets_Theme_Info {
                 $this->maybe_update();
 
                 if (!$this->version_supported()) {
-                        echo "<div class='wrap'><h2>" . printf( __( 'Theme Usage Information %s This plugin requires at least WordPress version 3.4 - Please upgrade to stay safe and secure.', 'cets_theme_info'), '</h2>') . "</div>";
+                        echo "<div class='wrap'><h2>" . printf( __( 'Theme Usage Information %s This plugin requires at least WordPress version 3.4 - Please upgrade to stay safe and secure.', 'cets-theme-info'), '</h2>') . "</div>";
                         return;
                 }
                 //Handle updates
                 if (isset($_POST['action']) && $_POST['action'] == 'update') {
                                 update_site_option('cets_theme_info_allow', $_POST['usage_flag']);
                         ?>
-                        <div id="message" class="updated fade"><p><?php _e( 'Options saved.', 'cets_theme_info') ?></p></div>
+                        <div id="message" class="updated fade"><p><?php _e( 'Options saved.', 'cets-theme-info') ?></p></div>
            <?php
                 }
 
@@ -326,7 +326,7 @@ class cets_Theme_Info {
                 </style>
                 <div class="wrap">
                         <?php screen_icon( 'themes' ); ?>
-                        <h2><?php _e( 'Theme Usage Information', 'cets_theme_info'); ?></h2>
+                        <h2><?php _e( 'Theme Usage Information', 'cets-theme-info'); ?></h2>
                         
                         <?php
                         if (isset($_GET['tab'])) {
@@ -339,23 +339,23 @@ class cets_Theme_Info {
                         ?>
                         
                         <h2 class="nav-tab-wrapper">
-                            <a href="?page=cets_theme_info.php&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Themes', 'cets_theme_info'); ?></a>
-                            <a href="?page=cets_theme_info.php&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', 'cets_theme_info'); ?></a>
+                            <a href="?page=cets_theme_info.php&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Themes', 'cets-theme-info'); ?></a>
+                            <a href="?page=cets_theme_info.php&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', 'cets-theme-info'); ?></a>
                         </h2>
                         
                         <?php if ($active_tab == 'settings') { ?>
                             
                         <div class="tab-body">
-                            <h2><?php _e('Manage User Access', 'cets_theme_info'); ?></h2>
-                            <p><?php _e('Users can see usage information for themes in Appearance -> Themes. You can control user access to that information via this toggle.', 'cets_theme_info'); ?></p>
+                            <h2><?php _e('Manage User Access', 'cets-theme-info'); ?></h2>
+                            <p><?php _e('Users can see usage information for themes in Appearance -> Themes. You can control user access to that information via this toggle.', 'cets-theme-info'); ?></p>
                             <form name="themeinfoform" action="" method="post">
                                 <table class="form-table">
                                     <tbody>
                                         <tr valign="top">
-                                            <th scope="row"><?php _e('Let Users View Theme Usage Information:', 'cets_theme_info'); ?> </th>
+                                            <th scope="row"><?php _e('Let Users View Theme Usage Information:', 'cets-theme-info'); ?> </th>
                                             <td>
-                                                <label><input type="radio" name="usage_flag" value="1" <?php checked('1', $usage_flag) ?> /> <?php _e('Yes', 'cets_theme_info') ?></label><br/>
-                                                <label><input type="radio" name="usage_flag" value="0" <?php checked('0', $usage_flag) ?> /> <?php _e('No', 'cets_theme_info') ?></label>
+                                                <label><input type="radio" name="usage_flag" value="1" <?php checked('1', $usage_flag) ?> /> <?php _e('Yes', 'cets-theme-info') ?></label><br/>
+                                                <label><input type="radio" name="usage_flag" value="0" <?php checked('0', $usage_flag) ?> /> <?php _e('No', 'cets-theme-info') ?></label>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -373,10 +373,10 @@ class cets_Theme_Info {
                             <table class="widefat" id="cets_active_themes">
                                 <thead>
                                         <tr>
-                                                <th class="nocase"><?php _e( 'Used Themes', 'cets_theme_info'); ?></th>
-                                                <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets_theme_info'); ?></th>
-                                                <th class="num"><?php _e( 'Total Blogs', 'cets_theme_info'); ?></th>
-                                                <th><?php _e( 'Blog Titles', 'cets_theme_info'); ?></th>
+                                                <th class="nocase"><?php _e( 'Used Themes', 'cets-theme-info'); ?></th>
+                                                <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
+                                                <th class="num"><?php _e( 'Total Blogs', 'cets-theme-info'); ?></th>
+                                                <th><?php _e( 'Blog Titles', 'cets-theme-info'); ?></th>
 
                                         </tr>
                                 </thead>
@@ -396,18 +396,18 @@ class cets_Theme_Info {
                                                     $thisTheme = $themes[$theme];
 
                                                     if (array_key_exists($thisTheme['Stylesheet'], $allowed_themes)) { 
-                                                            _e( 'Yes', 'cets_theme_info');
+                                                            _e( 'Yes', 'cets-theme-info');
                                                     } else {
-                                                            _e( 'No', 'cets_theme_info'); 
+                                                            _e( 'No', 'cets-theme-info'); 
                                                     }
                                             } else {
 
-                                                    _e( 'Theme Files Not Found!', 'cets_theme_info');
+                                                    _e( 'Theme Files Not Found!', 'cets-theme-info');
                                             }
                                             echo ('</td><td class="num">' . sizeOf($blogs) . '</td><td>');
 
                                             ?>
-                                            <a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo $counter; ?>').toggle(400);"><?php _e( 'Show/Hide Blogs', 'cets_theme_info'); ?></a>
+                                            <a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo $counter; ?>').toggle(400);"><?php _e( 'Show/Hide Blogs', 'cets-theme-info'); ?></a>
 
 
                                             <?php
@@ -431,10 +431,10 @@ class cets_Theme_Info {
                                 </tbody>
                                 <tfoot>
                                         <tr>
-                                                <th class="nocase"><?php _e( 'Used Themes', 'cets_theme_info'); ?></th>
-                                                <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets_theme_info'); ?></th>
-                                                <th class="num"><?php _e( 'Total Blogs', 'cets_theme_info'); ?></th>
-                                                <th><?php _e( 'Blog Titles', 'cets_theme_info'); ?></th>
+                                                <th class="nocase"><?php _e( 'Used Themes', 'cets-theme-info'); ?></th>
+                                                <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
+                                                <th class="num"><?php _e( 'Total Blogs', 'cets-theme-info'); ?></th>
+                                                <th><?php _e( 'Blog Titles', 'cets-theme-info'); ?></th>
 
                                         </tr>
                                 </tfoot>
@@ -443,9 +443,9 @@ class cets_Theme_Info {
                             <table class="widefat">
                                 <thead>
                                     <tr>
-                                        <th class="nocase"><?php _e( 'Unused Themes', 'cets_theme_info'); ?></th>
-                                        <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets_theme_info'); ?></th>
-                                        <th class="num"><?php _e( 'Total Blogs', 'cets_theme_info'); ?></th>
+                                        <th class="nocase"><?php _e( 'Unused Themes', 'cets-theme-info'); ?></th>
+                                        <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
+                                        <th class="num"><?php _e( 'Total Blogs', 'cets-theme-info'); ?></th>
                                         <th>&nbsp;</th>
                                     </tr>
                                 </thead>
@@ -454,17 +454,17 @@ class cets_Theme_Info {
                                 asort($unused_themes);
                                 foreach($unused_themes as $theme) {
                                         echo ("<tr><td>" . $theme['Name'] . "</td><td class=\"num\">");
-                                        if (array_key_exists($theme['Stylesheet'], $allowed_themes)) { _e( 'Yes', 'cets_theme_info'); }
-                                        else { _e( 'No', 'cets_theme_info'); }
+                                        if (array_key_exists($theme['Stylesheet'], $allowed_themes)) { _e( 'Yes', 'cets-theme-info'); }
+                                        else { _e( 'No', 'cets-theme-info'); }
                                         echo("</td><td class=\"num\">0</td><td>&nbsp;</td></tr>");
                                 }
                                 ?>	
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th class="nocase"><?php _e( 'Unused Themes', 'cets_theme_info'); ?></th>
-                                        <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets_theme_info'); ?></th>
-                                        <th class="num"><?php _e( 'Total Blogs', 'cets_theme_info'); ?></th>
+                                        <th class="nocase"><?php _e( 'Unused Themes', 'cets-theme-info'); ?></th>
+                                        <th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
+                                        <th class="num"><?php _e( 'Total Blogs', 'cets-theme-info'); ?></th>
                                         <th>&nbsp;</th>
                                     </tr>
                                 </tfoot>
