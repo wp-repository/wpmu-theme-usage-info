@@ -132,7 +132,7 @@ class cets_Theme_Info {
 		//get the list of blogs for this theme
 		$data = get_site_option('cets_theme_info_data');
 
-		if (isset($data[$theme->stylesheet])) {
+		if ( isset($data[$theme->stylesheet]) ) {
 			$blogs = $data[$theme->stylesheet];
 		} else {
 			$blogs = array();
@@ -227,7 +227,7 @@ class cets_Theme_Info {
 			return;
 		}
 		//Handle updates
-		if (isset($_POST['action']) && $_POST['action'] == 'update') {
+		if ( isset($_POST['action']) && $_POST['action'] == 'update' ) {
 			update_site_option('cets_theme_info_allow', $_POST['usage_flag']);
 		?>
 			<div id="message" class="updated fade"><p><?php _e( 'Options saved.', 'cets-theme-info') ?></p></div>
@@ -268,7 +268,6 @@ class cets_Theme_Info {
 			}
 		}
 		?>
-		<!-- Some extra CSS -->
 		<style type="text/css">
 			.tab-body {
 				padding: 10px;
@@ -357,7 +356,7 @@ class cets_Theme_Info {
 								echo('<tr valign="top"><td>' .$theme_object->name .'</td><td class="num">');
 
 								// get the array for this theme
-								if (´isset($themes[$theme]) ) {
+								if ( isset($themes[$theme]) ) {
 									$thisTheme = $themes[$theme];
 
 									if (array_key_exists($thisTheme['Stylesheet'], $allowed_themes)) { 
