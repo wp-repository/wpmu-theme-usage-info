@@ -1,14 +1,14 @@
 <?php
 /*
-Plugin Name:    Theme Info
-Plugin URI:     http://wordpress.org/extend/plugins/wpmu-theme-usage-info/
-Description:    WordPress plugin for letting network admins easily see what themes are actively used on the network
-Version:        1.8
-Author:         Kevin Graeme, <a href="http://deannaschneider.wordpress.com/" target="_target">Deanna Schneider</a> & <a href="http://www.jasonlemahieu.com/" target="_target">Jason Lemahieu</a>
-License:        TBD
-License URI:    TBD
-Text Domain:    cets_theme_info
-Domain Path:    /languages/
+Plugin Name: Theme Info
+Plugin URI: http://wordpress.org/extend/plugins/wpmu-theme-usage-info/
+Description: WordPress plugin for letting network admins easily see what themes are actively used on the network
+Version: 1.8
+Author: Kevin Graeme, <a href="http://deannaschneider.wordpress.com/" target="_target">Deanna Schneider</a> & <a href="http://www.jasonlemahieu.com/" target="_target">Jason Lemahieu</a>
+License: TBD
+License URI: TBD
+Text Domain: cets-theme-info
+Domain Path: /languages
 
 Copyright:
     Copyright 2009 - 2013 Board of Regents of the University of Wisconsin System

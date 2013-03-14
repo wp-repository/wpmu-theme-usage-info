@@ -2,7 +2,7 @@
 Contributors: DeannaS, kgraeme, MadtownLems
 Tags: Wordpress Multiuser, Themes 
 Requires at least: 3.4
-Tested up to: 3.5
+Tested up to: 3.5.1
 Stable tag: trunk
 
 
