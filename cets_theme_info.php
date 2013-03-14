@@ -22,7 +22,7 @@ class cets_Theme_Info {
         * PHP 4 constructor
         */
         function cets_Theme_Info() {
-           cets_Theme_Info::__construct();
+                cets_Theme_Info::__construct();
         }
         
         function __construct() {            
@@ -199,13 +199,55 @@ class cets_Theme_Info {
         function theme_info_add_page() {
                 // Add a submenu
                 if(is_super_admin()) {
-
-                        $page =	add_submenu_page( 'themes.php', __( 'Theme Usage Info', 'cets_theme_info'), __( 'Theme Usage Info', 'cets_theme_info'), 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));
-                        
+                        $this->page = add_submenu_page( 'themes.php', __( 'Theme Usage Info', 'cets_theme_info'), __( 'Theme Usage Info', 'cets_theme_info'), 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));       
                 }
+                add_action("load-$this->page", array( &$this, 'help_tabs'));
+        }
+        
+        function help_tabs() {
+                $screen = get_current_screen();
+                $screen->add_help_tab( array(
+                    'id'        => 'cets_theme_info_about',
+                    'title'     => __('About', 'cets_theme_info'),
+                    'callback'  => array( &$this, 'about_tab')
+                ));       
         }
 
+        function about_tab() { ?>
+                <h1>WPMU Theme Info</h1>
+                <p>
+                    <a href="http://wordpress.org/extend/plugins/wpmu-theme-usage-info/" target="_blank">WordPress.org</a> | 
+                    <a href="https://github.com/Foe-Services-Labs/wpmu-theme-usage-info" target="_blank">GitHub Repository</a> | 
+                    <a href="http://wordpress.org/support/plugin/wpmu-theme-usage-info" target="_blank">Issue Tracker</a>
+                </p>
 
+                <h3><?php _e( 'Development', 'cets_theme_info'); ?></h3>
+                <ul>
+                    <li>Kevin Graeme | <a href="http://profiles.wordpress.org/kgraeme/" target="_blank">kgraeme@WP.org</a></li>
+                    <li><a href="http://deannaschneider.wordpress.com/" target="_blank">Deanna Schneider</a> | <a href="http://profiles.wordpress.org/deannas/" target="_blank">deannas@WP.org</a></li>
+                    <li><a href="http://www.jasonlemahieu.com/" target="_blank">Jason Lemahieu</a> | <a href="http://profiles.wordpress.org/MadtownLems/" target="_blank">MadtownLems@WP.org</a></li>
+                </ul>
+
+                <h3>WordPress</h3>
+                <ul>
+                    <li><?php printf( __( 'Requires at least: %s', 'cets_theme_info'), '3.4'); ?></li>
+                    <li><?php printf( __( 'Tested up to: %s', 'cets_theme_info'), '3.5.1'); ?></li>
+                </ul>
+
+                <h3><?php _e( 'Languages', 'cets_theme_info'); ?></h3>
+                <ul>
+                    <li><?php _e( 'English'); ?></li>
+                    <li><?php _e( 'German'); ?></li>
+                </ul>
+                <p><?php printf( __( 'Help to translate at %s', 'cets_theme_info'), '<a href="https://translate.foe-services.de/projects/cets_theme_info" target="_blank">https://translate.foe-services.de/projects/cets_theme_info</a>'); ?></p>
+
+                <h3><?php _e( 'License', 'cets_theme_info'); ?></h3> 
+                <p>Copyright 2009-2013 Board of Regents of the University of Wisconsin System<br />
+                Cooperative Extension Technology Services<br />
+                University of Wisconsin-Extension</p>
+        <?php 
+        }
+        
         // Create a function to actually display stuff on theme usage
         function theme_info_page( $active_tab = '' ) {            
                 $this->maybe_update();
@@ -290,8 +332,6 @@ class cets_Theme_Info {
                         <?php
                         if (isset($_GET['tab'])) {
                             $active_tab = $_GET['tab'];
-                        } else if ($active_tab == 'about') {
-                            $active_tab = 'about';
                         } else if ($active_tab == 'settings') {
                             $active_tab = 'settings';
                         } else {
@@ -302,49 +342,9 @@ class cets_Theme_Info {
                         <h2 class="nav-tab-wrapper">
                             <a href="?page=cets_theme_info.php&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Themes', 'cets_theme_info'); ?></a>
                             <a href="?page=cets_theme_info.php&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', 'cets_theme_info'); ?></a>
-                            <a href="?page=cets_theme_info.php&tab=about" class="nav-tab <?php echo $active_tab == 'about' ? 'nav-tab-active' : ''; ?>"><?php _e( 'About', 'cets_theme_info'); ?></a>
                         </h2>
                         
-                        <?php if ($active_tab == 'about') { 
-                                                        global $current_screen;
-                            print_r($current_screen);
-                            ?>
-                        
-                        <div class="tab-body">
-                            <h1>WPMU Theme Info</h1>
-                            <p>
-                                <a href="http://wordpress.org/extend/plugins/wpmu-theme-usage-info/" target="_blank">WordPress.org</a> | 
-                                <a href="https://github.com/Foe-Services-Labs/wpmu-theme-usage-info" target="_blank">GitHub Repository</a> | 
-                                <a href="http://wordpress.org/support/plugin/wpmu-theme-usage-info" target="_blank">Issue Tracker</a>
-                            </p>
-
-                            <h3><?php _e( 'Development', 'cets_theme_info'); ?></h3>
-                            <ul>
-                                <li>Kevin Graeme | <a href="http://profiles.wordpress.org/kgraeme/" target="_blank">kgraeme@WP.org</a></li>
-                                <li><a href="http://deannaschneider.wordpress.com/" target="_blank">Deanna Schneider</a> | <a href="http://profiles.wordpress.org/deannas/" target="_blank">deannas@WP.org</a></li>
-                                <li><a href="http://www.jasonlemahieu.com/" target="_blank">Jason Lemahieu</a> | <a href="http://profiles.wordpress.org/MadtownLems/" target="_blank">MadtownLems@WP.org</a></li>
-                            </ul>
-
-                            <h3>WordPress</h3>
-                            <ul>
-                                <li><?php printf( __( 'Requires at least: %s', 'cets_theme_info'), '3.4'); ?></li>
-                                <li><?php printf( __( 'Tested up to: %s', 'cets_theme_info'), '3.5.1'); ?></li>
-                            </ul>
-
-                            <h3><?php _e( 'Languages', 'cets_theme_info'); ?></h3>
-                            <ul>
-                                <li><?php _e( 'English'); ?></li>
-                                <li><?php _e( 'German'); ?></li>
-                            </ul>
-                            <p><?php printf( __( 'Help to translate at %s', 'cets_theme_info'), '<a href="https://translate.foe-services.de/projects/cets_theme_info" target="_blank">https://translate.foe-services.de/projects/cets_theme_info</a>'); ?></p>
-
-                            <h3><?php _e( 'License', 'cets_theme_info'); ?></h3> 
-                            <p>Copyright 2009-2013 Board of Regents of the University of Wisconsin System<br />
-                            Cooperative Extension Technology Services<br />
-                            University of Wisconsin-Extension</p>
-                        </div>
-                        
-                        <?php } else if ($active_tab == 'settings') { ?>
+                        <?php if ($active_tab == 'settings') { ?>
                             
                         <div class="tab-body">
                             <h2><?php _e('Manage User Access', 'cets_theme_info'); ?></h2>
@@ -482,14 +482,14 @@ class cets_Theme_Info {
                 $this->generate_theme_blog_list();
         }
         function load_scripts() {
-                global $current_screen;
-                // todo limit loading to about tab
-                if ( $current_screen->id == 'themes_page_cets_theme_info-network' ) {
+                $screen = get_current_screen();
+                if ( $screen->id == $this->page . '-network' ) {
                         wp_register_script( 'tablesort', plugins_url('js/tablesort-2.4.min.js', __FILE__), array(), '2.4', true);
                         wp_enqueue_script( 'tablesort' );
                 }
-        } 
+        }
 
 }// end class
 
-add_action( 'plugins_loaded', create_function( '', 'global $cets_Theme_Info; $cets_Theme_Info = new cets_Theme_Info();' ) );
+new cets_Theme_Info();
+?>
