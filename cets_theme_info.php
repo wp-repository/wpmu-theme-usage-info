@@ -302,7 +302,7 @@ class cets_Theme_Info {
 			.pc_settings_right {
 				border-right: 3px solid black;
 			}
-			.widefat tbody tr:hover td, .table-hover tbody tr:hover th {
+			.widefat tr:hover td {
 				background-color: #DDD;
 			}
 		</style>
