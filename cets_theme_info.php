@@ -172,8 +172,15 @@ class cets_Theme_Info {
 	function theme_info_add_page() {
 		// Add a submenu
 		if ( is_network_admin() )
-			$this->page = add_submenu_page( 'themes.php', __( 'Theme Usage Info', 'cets-theme-info'), __( 'Theme Usage Info', 'cets-theme-info'), 'manage_network', basename(__FILE__), array(&$this, 'theme_info_page'));
-		
+			$this->page = add_submenu_page(
+				'themes.php',
+				__( 'Theme Usage Info', 'cets-theme-info'),
+				__( 'Theme Usage Info', 'cets-theme-info'),
+				'manage_network',
+				basename(__FILE__),
+				array(&$this, 'theme_info_page')
+			);
+	
 		add_action("load-$this->page", array( &$this, 'help_tabs'));
 	}
 
@@ -187,34 +194,40 @@ class cets_Theme_Info {
 	}
 
 	function about_tab() { ?>
+		<style>.tab-about li { list-style: none; }</style>
 		<h1>WPMU Theme Info</h1>
 		<p>
 			<a href="http://wordpress.org/extend/plugins/wpmu-theme-usage-info/" target="_blank">WordPress.org</a> | 
 			<a href="https://github.com/Foe-Services-Labs/wpmu-theme-usage-info" target="_blank">GitHub Repository</a> | 
 			<a href="http://wordpress.org/support/plugin/wpmu-theme-usage-info" target="_blank">Issue Tracker</a>
 		</p>
-
-		<h3><?php _e( 'Development', 'cets-theme-info'); ?></h3>
-		<ul>
-			<li>Kevin Graeme | <a href="http://profiles.wordpress.org/kgraeme/" target="_blank">kgraeme@WP.org</a></li>
-			<li><a href="http://deannaschneider.wordpress.com/" target="_blank">Deanna Schneider</a> | <a href="http://profiles.wordpress.org/deannas/" target="_blank">deannas@WP.org</a></li>
-			<li><a href="http://www.jasonlemahieu.com/" target="_blank">Jason Lemahieu</a> | <a href="http://profiles.wordpress.org/MadtownLems/" target="_blank">MadtownLems@WP.org</a></li>
+		<ul class="tab-about">
+			<li><b><?php _e( 'Development', 'cets-theme-info'); ?>:</b>
+				<ul>
+					<li>Kevin Graeme | <a href="http://profiles.wordpress.org/kgraeme/" target="_blank">kgraeme@WP.org</a></li>
+					<li><a href="http://deannaschneider.wordpress.com/" target="_blank">Deanna Schneider</a> | <a href="http://profiles.wordpress.org/deannas/" target="_blank">deannas@WP.org</a></li>
+					<li><a href="http://www.jasonlemahieu.com/" target="_blank">Jason Lemahieu</a> | <a href="http://profiles.wordpress.org/MadtownLems/" target="_blank">MadtownLems@WP.org</a></li>
+				</ul>
+			</li>
+			<li><b>WordPress:</b>
+				<ul>
+					<li><?php printf( __( 'Requires at least: %s', 'cets-theme-info'), '3.4'); ?></li>
+					<li><?php printf( __( 'Tested up to: %s', 'cets-theme-info'), '3.5.1'); ?></li>
+				</ul>
+			</li>
+			<li><b><?php _e( 'Languages', 'cets-theme-info'); ?>:</b>
+				<ul>
+					<li>English (development), German</li>
+					<li><?php printf( __( 'Help to translate at %s', 'cets-theme-info'), '<a href="https://translate.foe-services.de/projects/cets-theme-info" target="_blank">Translate > WPMU Theme Info</a>'); ?></li>
+				</ul>
+			</li>
+			<li><b><?php _e( 'License', 'cets-theme-info'); ?>:</b></li>
+			<li>
+				<p>Copyright 2009-2013 Board of Regents of the University of Wisconsin System<br />
+				Cooperative Extension Technology Services<br />
+				University of Wisconsin-Extension</p>
+			</li>
 		</ul>
-
-		<h3>WordPress</h3>
-		<ul>
-			<li><?php printf( __( 'Requires at least: %s', 'cets-theme-info'), '3.4'); ?></li>
-			<li><?php printf( __( 'Tested up to: %s', 'cets-theme-info'), '3.5.1'); ?></li>
-		</ul>
-
-		<h3><?php _e( 'Languages', 'cets-theme-info'); ?>:</h3>
-		<p>English (development), German</p>
-		<p><?php printf( __( 'Help to translate at %s', 'cets-theme-info'), '<a href="https://translate.foe-services.de/projects/cets_theme_info" target="_blank">https://translate.foe-services.de/projects/cets_theme_info</a>'); ?></p>
-
-		<h3><?php _e( 'License', 'cets-theme-info'); ?></h3> 
-		<p>Copyright 2009-2013 Board of Regents of the University of Wisconsin System<br />
-		Cooperative Extension Technology Services<br />
-		University of Wisconsin-Extension</p>
 	<?php 
 	}
 
