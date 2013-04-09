@@ -17,14 +17,7 @@ Copyright:
 */
 
 class cets_Theme_Info {
-
-	/**
-	* PHP 4 constructor
-	*/
-	function cets_Theme_Info() {
-		cets_Theme_Info::__construct();
-	}
-
+	
 	function __construct() {            
 		add_action( 'network_admin_menu', array(&$this, 'theme_info_add_page'));
 
@@ -40,12 +33,17 @@ class cets_Theme_Info {
 			// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
 			$gen_time = get_site_option('cets_theme_info_data_freshness');
 
-			if ((time() - $gen_time) > 3600 || strlen($gen_time) == 0) {
+			if ((time() - $gen_time) > 3600 || strlen($gen_time) == 0)
 				$this->generate_theme_blog_list();
-			}	
-
 		}
-	}  // function cets_theme_info
+	}
+	
+	/**
+	* PHP 4 constructor
+	*/
+	function cets_Theme_Info() {
+		cets_Theme_Info::__construct();
+	}
 
 	function maybe_update() {
 		$this_version = "1.8";
