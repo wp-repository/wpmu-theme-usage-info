@@ -5,9 +5,7 @@ Requires at least: 3.4
 Tested up to: 3.5.1
 Stable tag: trunk
 
-
-
-Provides info to network admins and users on popularity of themes. 
+Provides info to network admins and users on the popularity of themes. 
 
 == Description ==
 Included files:
