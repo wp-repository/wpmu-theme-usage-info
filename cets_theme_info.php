@@ -16,7 +16,7 @@ Copyright:
 	University of Wisconsin-Extension        
 */
 
-if ( !class_exists('cets_Plugin_Stats') ) {
+if ( !class_exists('cets_Theme_Info') ) {
 	
 	class cets_Theme_Info {
 		
@@ -205,8 +205,8 @@ if ( !class_exists('cets_Plugin_Stats') ) {
 			<h1>WPMU Theme Info</h1>
 			<p>
 				<a href="http://wordpress.org/extend/plugins/wpmu-theme-usage-info/" target="_blank">WordPress.org</a> | 
-				<a href="https://github.com/Foe-Services-Labs/wpmu-theme-usage-info" target="_blank">GitHub Repository</a> | 
-				<a href="http://wordpress.org/support/plugin/wpmu-theme-usage-info" target="_blank">Issue Tracker</a>
+				<a href="https://github.com/wp-repository/wpmu-theme-usage-info" target="_blank">GitHub Repository</a> | 
+				<a href="https://github.com/wp-repository/wpmu-theme-usage-info/issues" target="_blank">Issue Tracker</a>
 			</p>
 			<ul class="tab-about">
 				<li><b><?php _e( 'Development', 'cets-theme-info'); ?>:</b>
