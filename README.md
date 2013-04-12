@@ -55,6 +55,12 @@ TBD
 
 
 ## Changelog
+* __2.0__ _[future plans/roadmap][4.1]_
+* __1.9__ (coming soon)
+	* moved development to GitHub
+	* full translation support
+	* German language support
+	* UI polished with tabs and functioning table-sorting
 * __1.8__
 	* Added a check for making sure the Theme Files are present, and will display a message if there is a site using a theme that no longer exists
 * __1.7__
@@ -67,3 +73,5 @@ TBD
 	* properly store data after the 3.3 add_site_option changes
 * __1.1__
 	* Adding Show/Hide blogs on the administrative page.
+
+[4.1]: https://github.com/wp-repository/wpmu-theme-usage-info/issues?milestone=1
