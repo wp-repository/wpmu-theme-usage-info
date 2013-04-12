@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Theme Info
+Plugin Name: WPMU Theme Info
 Plugin URI: http://wordpress.org/extend/plugins/wpmu-theme-usage-info/
 Description: WordPress plugin for letting network admins easily see what themes are actively used on the network
-Version: 1.8
+Version: 1.9
 Author: Kevin Graeme, <a href="http://deannaschneider.wordpress.com/" target="_target">Deanna Schneider</a> & <a href="http://www.jasonlemahieu.com/" target="_target">Jason Lemahieu</a>
 License: TBD
 License URI: TBD
@@ -19,15 +19,20 @@ Copyright:
 if ( !class_exists('cets_Plugin_Stats') ) {
 	
 	class cets_Theme_Info {
+		
+		const ID		= 'cets-theme-info';
+		const VERSION	= '1.9';
 
 		function __construct() {            
-			add_action( 'network_admin_menu', array(&$this, 'theme_info_add_page'));
+			
+			add_filter( 'theme_action_links', array( &$this, 'action_links'), 9, 3);
+			add_action( 'switch_theme', array( &$this, 'on_switch_theme'));			
 
-			add_filter( 'theme_action_links', array(&$this, 'action_links'), 9, 3);
-			add_action( 'switch_theme', array(&$this, 'on_switch_theme'));
-
-			if ( is_network_admin() )
+			if ( is_network_admin() ) {
 				add_action( 'admin_enqueue_scripts', array( &$this, 'load_scripts'));
+				add_action( 'network_admin_menu', array( &$this, 'theme_info_add_page'));
+				add_filter( 'plugin_row_meta', array( $this, 'set_plugin_meta' ), 10, 2 );
+			}
 
 			load_plugin_textdomain( 'cets-theme-info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
@@ -48,15 +53,16 @@ if ( !class_exists('cets_Plugin_Stats') ) {
 		}
 
 		function maybe_update() {
-			$this_version = "1.8";
+			
+			$this_version = self::VERSION;
 			$plugin_version = get_site_option('cets_theme_info_version', 0);
 
-			if (version_compare($plugin_version, $this_version, '<')) {
+			if ( version_compare( $plugin_version, $this_version, '<') ) {
 				add_site_option('cets_theme_info_data_freshness', 1);
 				update_site_option('cets_theme_info_data_freshness', 2);
 			}
 
-			if ($plugin_version == 0) {
+			if ( $plugin_version == 0 ) {
 				add_site_option('cets_theme_info_version', $this_version);
 			} else {
 				update_site_option('cets_theme_info_version', $this_version);
@@ -75,6 +81,7 @@ if ( !class_exists('cets_Plugin_Stats') ) {
 		}
 
 		function generate_theme_blog_list() {
+			
 			global $wpdb, $current_site, $wp_version;
 
 			if (!$this->version_supported())
@@ -110,8 +117,8 @@ if ( !class_exists('cets_Plugin_Stats') ) {
 				}
 			}
 			// Set the site option to hold all this
-			update_site_option('cets_theme_info_data', $blogthemes);
-			update_site_option('cets_theme_info_data_freshness', time());
+			update_site_option( 'cets_theme_info_data', $blogthemes);
+			update_site_option( 'cets_theme_info_data_freshness', time());
 		}
 
 		// $actions       = apply_filters( 'theme_action_links', $actions, $theme );
@@ -177,8 +184,8 @@ if ( !class_exists('cets_Plugin_Stats') ) {
 					__( 'Theme Usage Info', 'cets-theme-info'),
 					__( 'Theme Usage Info', 'cets-theme-info'),
 					'manage_network',
-					basename(__FILE__),
-					array(&$this, 'theme_info_page')
+					'wpmu-theme-info',
+					array( &$this, 'theme_info_page')
 				);
 
 			add_action("load-$this->page", array( &$this, 'help_tabs'));
@@ -455,14 +462,30 @@ if ( !class_exists('cets_Plugin_Stats') ) {
 
 			$this->generate_theme_blog_list();
 		}
+		
 		function load_scripts() {
+			
 			$screen = get_current_screen();
-			if ( $screen->id == $this->page . '-network' ) {
+			
+			// if ( $screen->id == $this->page . '-network' ) {
 				wp_register_script( 'tablesort', plugins_url('js/tablesort-2.4.min.js', __FILE__), array(), '2.4', true);
 				wp_enqueue_script( 'tablesort' );
-			}
+			//}
+			
 		}
-
+		
+		function set_plugin_meta( $links, $file ) {
+			
+			if ( $file == plugin_basename( __FILE__ ) ) {
+				return array_merge(
+					$links,
+					array( '<a href="https://github.com/wp-repository/wpmu-theme-info" target="_blank">GitHub</a>' )
+				);
+			}
+			
+			return $links;
+		}
+		
 	} // END class cets_Theme_Info
 
 	$GLOBALS['cets_Theme_Info'] = new cets_Theme_Info();
