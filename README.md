@@ -16,7 +16,7 @@ __Provides info to network admins and users on the popularity of themes.__
 [1.4]: https://github.com/wp-repository/wpmu-theme-usage-info/issues
 [1.5]: https://github.com/wp-repository/wpmu-theme-usage-info/archive/1.9.zip
 [1.6]: http://plugins.trac.wordpress.org/browser/wpmu-theme-usage-info/
-[1.7]: https://translate.foe-services.de/projects/cets_theme_info
+[1.7]: https://translate.foe-services.de/projects/cets-theme-info
 
 ### Description
 WordPress Multisite has two ways to activate themes either sitewide, or on a blog-by-blog basis. But, there's no convenient way built-in to know which 
