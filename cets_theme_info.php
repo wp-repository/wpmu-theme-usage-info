@@ -328,8 +328,8 @@ if ( !class_exists('cets_Theme_Info') ) {
 				?>
 
 				<h2 class="nav-tab-wrapper">
-					<a href="?page=cets_theme_info.php&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Themes', 'cets-theme-info'); ?></a>
-					<a href="?page=cets_theme_info.php&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', 'cets-theme-info'); ?></a>
+					<a href="?page=wpmu-theme-info.php&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Themes', 'cets-theme-info'); ?></a>
+					<a href="?page=wpmu-theme-info.php&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', 'cets-theme-info'); ?></a>
 				</h2>
 
 				<?php if ($active_tab == 'settings') { ?>
@@ -342,8 +342,8 @@ if ( !class_exists('cets_Theme_Info') ) {
 									<tr valign="top">
 										<th scope="row"><?php _e('Let Users View Theme Usage Information:', 'cets-theme-info'); ?> </th>
 										<td>
-											<label><input type="radio" name="usage_flag" value="1" <?php checked('1', $usage_flag) ?> /> <?php _e('Yes', 'cets-theme-info') ?></label><br/>
-											<label><input type="radio" name="usage_flag" value="0" <?php checked('0', $usage_flag) ?> /> <?php _e('No', 'cets-theme-info') ?></label>
+											<label><input type="radio" name="usage_flag" value="1" <?php checked('1', $usage_flag) ?> /> <?php _e('Yes') ?></label><br/>
+											<label><input type="radio" name="usage_flag" value="0" <?php checked('0', $usage_flag) ?> /> <?php _e('No') ?></label>
 										</td>
 									</tr>
 								</tbody>
@@ -479,7 +479,7 @@ if ( !class_exists('cets_Theme_Info') ) {
 			if ( $file == plugin_basename( __FILE__ ) ) {
 				return array_merge(
 					$links,
-					array( '<a href="https://github.com/wp-repository/wpmu-theme-info" target="_blank">GitHub</a>' )
+					array( '<a href="https://github.com/wp-repository/wpmu-theme-usage-info" target="_blank">GitHub</a>' )
 				);
 			}
 			
