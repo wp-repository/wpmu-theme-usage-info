@@ -8,13 +8,13 @@ __Provides info to network admins and users on the popularity of themes.__
 | ----:						| :----				| :---: | :----						| :----				|
 | Requires at least:		| __3.4__			| *		| [GitHub-Repository][1.3]	| [Translate][1.7]	|
 | Tested up to:				| __3.5.1__			| *		| [Issue-Tracker][1.4]		|					|
-| Current stable release:	| __[1.9][1.5]__	| *		| [WordPress.org-SVN][1.6]	|					|
+| Current stable release:	| __[2.0][1.5]__	| *		| [WordPress.org-SVN][1.6]	|					|
 
 [1.1]: https://github.com/wp-repository/wpmu-theme-usage-info
 [1.2]: http://wordpress.org/extend/plugins/wpmu-theme-usage-info/
 [1.3]: https://github.com/wp-repository/wpmu-theme-usage-info
 [1.4]: https://github.com/wp-repository/wpmu-theme-usage-info/issues
-[1.5]: https://github.com/wp-repository/wpmu-theme-usage-info/archive/1.9.zip
+[1.5]: https://github.com/wp-repository/wpmu-theme-usage-info/archive/2.0.zip
 [1.6]: http://plugins.trac.wordpress.org/browser/wpmu-theme-usage-info/
 [1.7]: https://translate.foe-services.de/projects/cets-theme-info
 
@@ -51,12 +51,32 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 
 
 ## License
-TBD
+__[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
+
+	WPMU Theme Info
+
+	Copyright (C) 2009 - 2013 Board of Regents of the University of Wisconsin System
+	Cooperative Extension Technology Services
+	University of Wisconsin-Extension
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 ## Changelog
-* __2.0__ _[future plans/roadmap][4.1]_
-* __1.9__ (coming soon)
+* __2.0__
+	* 
+* __1.9__
 	* moved development to GitHub
 	* full translation support
 	* German language support
