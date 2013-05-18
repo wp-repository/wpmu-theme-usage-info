@@ -1,9 +1,9 @@
 === WPMU Theme Info ===
-Contributors: DeannaS, kgraeme, MadtownLems
+Contributors: DeannaS, kgraeme, MadtownLems, wp-repository
 Tags: Wordpress Multiuser, Themes, MU, WPMU, multisite, network
 Requires at least: 3.4
 Tested up to: 3.5.1
-Stable tag: 1.9
+Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,9 +21,9 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 
 = Development =
 
-* Repository: [wp-repository](https://github.com/wp-repository) / [wpmu-theme-usage-info](https://github.com/wp-repository/wpmu-theme-usage-info)
+* GitHub Repository: [wpmu-theme-usage-info](https://github.com/wp-repository/wpmu-theme-usage-info)
 * Issue-Tracker: [WPMU Theme Info Issues](https://github.com/wp-repository/wpmu-theme-usage-info/issues) **Please use the Issue-Tracker at GitHub!!**
-* Translation: [Translate > WPMU Theme Info](https://translate.foe-services.de/projects/cets_theme_info)
+* Translation: [Translate > WPMU Theme Info](https://translate.foe-services.de/projects/cets-theme-info)
 
 == Installation ==
 
@@ -42,6 +42,9 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 Nothing yet.
 
 == Changelog ==
+
+= 2.0 =
+*
 
 = 1.9 =
 * fix + update of tablesort js library

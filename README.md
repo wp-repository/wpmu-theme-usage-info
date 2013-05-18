@@ -1,4 +1,4 @@
-# WPMU Theme Info
+# WPMU Theme Info [![Build Status](https://travis-ci.org/wp-repository/wpmu-theme-usage-info.png?branch=master)](https://travis-ci.org/wp-repository/wpmu-theme-usage-info)
 __Provides info to network admins and users on the popularity of themes.__
 
 ## Details
@@ -74,8 +74,10 @@ __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 
 
 ## Changelog
-* __2.0__
-	* 
+* __2.0__ _[future plans/roadmap][4.1]_
+	* added build testing via travis-ci.org
+	* added custom unit tests @TODO
+	* TBD
 * __1.9__
 	* moved development to GitHub
 	* full translation support
@@ -94,4 +96,4 @@ __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 * __1.1__
 	* Adding Show/Hide blogs on the administrative page.
 
-[4.1]: https://github.com/wp-repository/wpmu-theme-usage-info/issues?milestone=1
+[4.1]: https://github.com/wp-repository/wpmu-theme-usage-info/issues
