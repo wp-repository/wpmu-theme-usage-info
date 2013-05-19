@@ -230,24 +230,8 @@ if ( !class_exists('cets_Theme_Info') ) {
 						<li><a href="http://www.jasonlemahieu.com/" target="_blank">Jason Lemahieu</a> | <a href="http://profiles.wordpress.org/MadtownLems/" target="_blank">MadtownLems@WP.org</a></li>
 					</ul>
 				</li>
-				<li><b>WordPress:</b>
-					<ul>
-						<li><?php printf( __( 'Requires at least: %s', 'cets-theme-info'), '3.4'); ?></li>
-						<li><?php printf( __( 'Tested up to: %s', 'cets-theme-info'), '3.5.1'); ?></li>
-					</ul>
-				</li>
-				<li><b><?php _e( 'Languages', 'cets-theme-info'); ?>:</b>
-					<ul>
-						<li>English (development), German</li>
-						<li><?php printf( __( 'Help to translate at %s', 'cets-theme-info'), '<a href="https://translate.foe-services.de/projects/cets-theme-info" target="_blank">Translate > WPMU Theme Info</a>'); ?></li>
-					</ul>
-				</li>
-				<li><b><?php _e( 'License', 'cets-theme-info'); ?>:</b></li>
-				<li>
-					<p>Copyright 2009-2013 Board of Regents of the University of Wisconsin System<br />
-					Cooperative Extension Technology Services<br />
-					University of Wisconsin-Extension</p>
-				</li>
+				<li><b><?php _e( 'Languages', 'cets-theme-info'); ?>:</b> English (development), German, Spanish, <a href="https://translate.foe-services.de/projects/cets-theme-info" target="_blank">more...</a></li> 
+				<li><b><?php _e( 'License', 'cets-theme-info'); ?>:</b> <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">GPLv2 or later</a></li>
 			</ul>
 		<?php 
 		}

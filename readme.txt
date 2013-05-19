@@ -44,7 +44,10 @@ Nothing yet.
 == Changelog ==
 
 = 2.0 =
-*
+* added build testing via travis-ci.org
+* added custom unit tests @TODO
+* added Spanish translation by Eduardo Larequi (https://github.com/elarequi)
+* TBD
 
 = 1.9 =
 * fix + update of tablesort js library

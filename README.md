@@ -77,6 +77,7 @@ __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 * __2.0__ _[future plans/roadmap][4.1]_
 	* added build testing via travis-ci.org
 	* added custom unit tests @TODO
+	* added Spanish translation by Eduardo Larequi (https://github.com/elarequi)
 	* TBD
 * __1.9__
 	* moved development to GitHub
