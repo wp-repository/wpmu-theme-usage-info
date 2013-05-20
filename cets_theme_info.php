@@ -3,7 +3,7 @@
 Plugin Name: WPMU Theme Info
 Plugin URI: http://wordpress.org/extend/plugins/wpmu-theme-usage-info/
 Description: WordPress plugin for letting network admins easily see what themes are actively used on the network
-Version: 1.9
+Version: 2.0-dev
 Author: Kevin Graeme, <a href="http://deannaschneider.wordpress.com/" target="_target">Deanna Schneider</a> & <a href="http://www.jasonlemahieu.com/" target="_target">Jason Lemahieu</a>
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html 
@@ -35,7 +35,7 @@ if ( !class_exists('cets_Theme_Info') ) {
 	class cets_Theme_Info {
 		
 		const ID		= 'cets-theme-info';
-		const VERSION	= '1.9';
+		const VERSION	= '2.0-dev';
 
 		function __construct() {            
 			

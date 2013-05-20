@@ -7,16 +7,17 @@ __Provides info to network admins and users on the popularity of themes.__
 | WordPress					| Version			| *		| Development				|					|
 | ----:						| :----				| :---: | :----						| :----				|
 | Requires at least:		| __3.4__			| *		| [GitHub-Repository][1.3]	| [Translate][1.7]	|
-| Tested up to:				| __3.5.1__			| *		| [Issue-Tracker][1.4]		|					|
-| Current stable release:	| __[2.0][1.5]__	| *		| [WordPress.org-SVN][1.6]	|					|
+| Tested up to:				| __3.5.1__			| *		| [Issue-Tracker][1.4]		| [WordPress.org-SVN][1.6] |
+| Current stable release:	| __[1.9][1.5]__	| *		| Current dev version:		| [2.0-dev][1.8]	|
 
 [1.1]: https://github.com/wp-repository/wpmu-theme-usage-info
 [1.2]: http://wordpress.org/extend/plugins/wpmu-theme-usage-info/
 [1.3]: https://github.com/wp-repository/wpmu-theme-usage-info
 [1.4]: https://github.com/wp-repository/wpmu-theme-usage-info/issues
-[1.5]: https://github.com/wp-repository/wpmu-theme-usage-info/archive/2.0.zip
+[1.5]: https://github.com/wp-repository/wpmu-theme-usage-info/archive/1.9.zip
 [1.6]: http://plugins.trac.wordpress.org/browser/wpmu-theme-usage-info/
 [1.7]: https://translate.foe-services.de/projects/cets-theme-info
+[1.8]: https://github.com/wp-repository/wpmu-theme-usage-info/archive/master.zip
 
 ### Description
 WordPress Multisite has two ways to activate themes either sitewide, or on a blog-by-blog basis. But, there's no convenient way built-in to know which 
@@ -74,7 +75,7 @@ __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 
 
 ## Changelog
-* __2.0__ _[future plans/roadmap][4.1]_
+* __2.0-dev__ _[future plans/roadmap][4.1]_
 	* added build testing via travis-ci.org
 	* added custom unit tests @TODO
 	* added Spanish translation by Eduardo Larequi (https://github.com/elarequi)

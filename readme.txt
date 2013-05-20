@@ -3,7 +3,7 @@ Contributors: DeannaS, kgraeme, MadtownLems, wp-repository
 Tags: Wordpress Multiuser, Themes, MU, WPMU, multisite, network
 Requires at least: 3.4
 Tested up to: 3.5.1
-Stable tag: 2.0
+Stable tag: 2.0-dev
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,7 +43,7 @@ Nothing yet.
 
 == Changelog ==
 
-= 2.0 =
+= 2.0-dev =
 * added build testing via travis-ci.org
 * added custom unit tests @TODO
 * added Spanish translation by Eduardo Larequi (https://github.com/elarequi)
