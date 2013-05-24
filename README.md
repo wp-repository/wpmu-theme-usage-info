@@ -98,4 +98,4 @@ __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 * __1.1__
 	* Adding Show/Hide blogs on the administrative page.
 
-[4.1]: https://github.com/wp-repository/wpmu-theme-usage-info/issues
+[4.1]: ../../issues
