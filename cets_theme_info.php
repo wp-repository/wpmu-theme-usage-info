@@ -7,7 +7,7 @@ Version: 2.0-dev
 Author: Kevin Graeme, <a href="http://deannaschneider.wordpress.com/" target="_target">Deanna Schneider</a> & <a href="http://www.jasonlemahieu.com/" target="_target">Jason Lemahieu</a>
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html 
-Text Domain: cets-theme-info
+Text Domain: wpmu-theme-info
 Domain Path: /languages
       
 	WPMU Theme Info
@@ -30,12 +30,26 @@ Domain Path: /languages
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-if ( !class_exists('cets_Theme_Info') ) {
+//avoid direct calls to this file
+if ( ! function_exists( 'add_filter' ) ) {
+	header('Status: 403 Forbidden');
+	header('HTTP/1.1 403 Forbidden');
+	exit();
+}
+
+if ( ! class_exists('cets_Theme_Info') ) {
+	
+	add_action(
+		'plugins_loaded', 
+		array ( 'cets_Theme_Info', 'get_instance' )
+	);
 	
 	class cets_Theme_Info {
-		
-		const ID		= 'cets-theme-info';
+
 		const VERSION	= '2.0-dev';
+		
+		// Plugin instance
+		protected static $instance = NULL;
 
 		function __construct() {            
 			
@@ -48,7 +62,7 @@ if ( !class_exists('cets_Theme_Info') ) {
 				add_filter( 'plugin_row_meta', array( $this, 'set_plugin_meta' ), 10, 2 );
 			}
 
-			load_plugin_textdomain( 'cets-theme-info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+			load_plugin_textdomain( 'wpmu-theme-info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
 			if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
 				// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
@@ -64,6 +78,14 @@ if ( !class_exists('cets_Theme_Info') ) {
 		*/
 		function cets_Theme_Info() {
 			cets_Theme_Info::__construct();
+		}
+		
+		// Access this plugin’s working instance
+		public static function get_instance() {	
+			if ( NULL === self::$instance )
+				self::$instance = new self;
+
+			return self::$instance;
 		}
 
 		function maybe_update() {
@@ -162,11 +184,11 @@ if ( !class_exists('cets_Theme_Info') ) {
 			// get the first param of the actions var and add some more stuff before it	
 			//$start = $actions[0];
 			$name = str_replace(" ", "_", $theme['Name']);
-			$text = "<div class='cets-theme-info'>" . __( 'Used on', 'cets-theme-info') . " ";
+			$text = "<div class='wpmu-theme-info'>" . __( 'Used on', 'wpmu-theme-info') . " ";
 			if (sizeOf($blogs) > 0) {
-				$text .='<a href="#TB_inline?height=155&width=300&inlineId='. $name . '" class="thickbox" title="' . __( 'Sites that use this theme', 'cets-theme-info') . '">';
+				$text .='<a href="#TB_inline?height=155&width=300&inlineId='. $name . '" class="thickbox" title="' . __( 'Sites that use this theme', 'wpmu-theme-info') . '">';
 			}
-			$text .= sizeOf($blogs) . " " . __( 'site', 'cets-theme-info');
+			$text .= sizeOf($blogs) . " " . __( 'site', 'wpmu-theme-info');
 			if (sizeOf($blogs) != 1) {$text .= 's';}
 			if (sizeOf($blogs)> 0 ) {
 				$text .= '</a>';
@@ -176,7 +198,7 @@ if ( !class_exists('cets_Theme_Info') ) {
 				$text .= '<div id="' . $name . '" style="display: none"><div>';
 
 				// loop through the list of blogs and display their titles
-				$text .=( __( 'Activated on the following sites:', 'cets-theme-info') . " <ul>");
+				$text .=( __( 'Activated on the following sites:', 'wpmu-theme-info') . " <ul>");
 				foreach ($blogs as $blog){
 					$text .= '<li><a href="http://' . $blog['blogurl'] . '" target="new">' . $blog['name'] . '</a></li>';
 				}
@@ -195,8 +217,8 @@ if ( !class_exists('cets_Theme_Info') ) {
 			if ( is_network_admin() )
 				$this->page = add_submenu_page(
 					'themes.php',
-					__( 'Theme Usage Info', 'cets-theme-info'),
-					__( 'Theme Usage Info', 'cets-theme-info'),
+					__( 'Theme Usage Info', 'wpmu-theme-info'),
+					__( 'Theme Usage Info', 'wpmu-theme-info'),
 					'manage_network',
 					'wpmu-theme-info',
 					array( &$this, 'theme_info_page')
@@ -209,7 +231,7 @@ if ( !class_exists('cets_Theme_Info') ) {
 			$screen = get_current_screen();
 			$screen->add_help_tab( array(
 				'id'        => 'cets_theme_info_about',
-				'title'     => __('About', 'cets-theme-info'),
+				'title'     => __('About', 'wpmu-theme-info'),
 				'callback'  => array( &$this, 'about_tab')
 			));       
 		}
@@ -223,15 +245,15 @@ if ( !class_exists('cets_Theme_Info') ) {
 				<a href="https://github.com/wp-repository/wpmu-theme-usage-info/issues" target="_blank">Issue Tracker</a>
 			</p>
 			<ul class="tab-about">
-				<li><b><?php _e( 'Development', 'cets-theme-info'); ?>:</b>
+				<li><b><?php _e( 'Development', 'wpmu-theme-info'); ?>:</b>
 					<ul>
 						<li>Kevin Graeme | <a href="http://profiles.wordpress.org/kgraeme/" target="_blank">kgraeme@WP.org</a></li>
 						<li><a href="http://deannaschneider.wordpress.com/" target="_blank">Deanna Schneider</a> | <a href="http://profiles.wordpress.org/deannas/" target="_blank">deannas@WP.org</a></li>
 						<li><a href="http://www.jasonlemahieu.com/" target="_blank">Jason Lemahieu</a> | <a href="http://profiles.wordpress.org/MadtownLems/" target="_blank">MadtownLems@WP.org</a></li>
 					</ul>
 				</li>
-				<li><b><?php _e( 'Languages', 'cets-theme-info'); ?>:</b> English (development), German, Spanish, <a href="https://translate.foe-services.de/projects/cets-theme-info" target="_blank">more...</a></li> 
-				<li><b><?php _e( 'License', 'cets-theme-info'); ?>:</b> <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">GPLv2 or later</a></li>
+				<li><b><?php _e( 'Languages', 'wpmu-theme-info'); ?>:</b> English (development), German, Spanish, <a href="https://translate.foe-services.de/projects/cets-theme-info" target="_blank">more...</a></li> 
+				<li><b><?php _e( 'License', 'wpmu-theme-info'); ?>:</b> <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">GPLv2 or later</a></li>
 			</ul>
 		<?php 
 		}
@@ -241,7 +263,7 @@ if ( !class_exists('cets_Theme_Info') ) {
 			$this->maybe_update();
 
 			if (!$this->version_supported()) {
-				echo "<div class='wrap'><h2>" . printf( __( 'Theme Usage Information %s This plugin requires at least WordPress version 3.4 - Please upgrade to stay safe and secure.', 'cets-theme-info'), '</h2>') . "</div>";
+				echo "<div class='wrap'><h2>" . printf( __( 'Theme Usage Information %s This plugin requires at least WordPress version 3.4 - Please upgrade to stay safe and secure.', 'wpmu-theme-info'), '</h2>') . "</div>";
 				return;
 			}
 			//Handle updates
@@ -313,7 +335,7 @@ if ( !class_exists('cets_Theme_Info') ) {
 			</style>
 			<div class="wrap">
 				<?php screen_icon( 'themes' ); ?>
-				<h2><?php _e( 'Theme Usage Information', 'cets-theme-info'); ?></h2>
+				<h2><?php _e( 'Theme Usage Information', 'wpmu-theme-info'); ?></h2>
 
 				<?php
 				if ( isset($_GET['tab']) ) {
@@ -326,19 +348,19 @@ if ( !class_exists('cets_Theme_Info') ) {
 				?>
 
 				<h2 class="nav-tab-wrapper">
-					<a href="?page=wpmu-theme-info.php&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Themes', 'cets-theme-info'); ?></a>
-					<a href="?page=wpmu-theme-info.php&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', 'cets-theme-info'); ?></a>
+					<a href="?page=wpmu-theme-info.php&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Themes', 'wpmu-theme-info'); ?></a>
+					<a href="?page=wpmu-theme-info.php&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', 'wpmu-theme-info'); ?></a>
 				</h2>
 
 				<?php if ($active_tab == 'settings') { ?>
 					<div class="tab-body">
-						<h2><?php _e('Manage User Access', 'cets-theme-info'); ?></h2>
-						<p><?php _e('Users can see usage information for themes in Appearance -> Themes. You can control user access to that information via this toggle.', 'cets-theme-info'); ?></p>
+						<h2><?php _e('Manage User Access', 'wpmu-theme-info'); ?></h2>
+						<p><?php _e('Users can see usage information for themes in Appearance -> Themes. You can control user access to that information via this toggle.', 'wpmu-theme-info'); ?></p>
 						<form name="themeinfoform" action="" method="post">
 							<table class="form-table">
 								<tbody>
 									<tr valign="top">
-										<th scope="row"><?php _e('Let Users View Theme Usage Information:', 'cets-theme-info'); ?> </th>
+										<th scope="row"><?php _e('Let Users View Theme Usage Information:', 'wpmu-theme-info'); ?> </th>
 										<td>
 											<label><input type="radio" name="usage_flag" value="1" <?php checked('1', $usage_flag) ?> /> <?php _e('Yes') ?></label><br/>
 											<label><input type="radio" name="usage_flag" value="0" <?php checked('0', $usage_flag) ?> /> <?php _e('No') ?></label>
@@ -359,10 +381,10 @@ if ( !class_exists('cets_Theme_Info') ) {
 						<table class="widefat" id="cets_active_themes">
 							<thead>
 								<tr>
-									<th class="nocase"><?php _e( 'Used Themes', 'cets-theme-info'); ?></th>
-									<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
-									<th class="num"><?php _e( 'Total Sites', 'cets-theme-info'); ?></th>
-									<th><?php _e( 'Site Titles', 'cets-theme-info'); ?></th>
+									<th class="nocase"><?php _e( 'Used Themes', 'wpmu-theme-info'); ?></th>
+									<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'wpmu-theme-info'); ?></th>
+									<th class="num"><?php _e( 'Total Sites', 'wpmu-theme-info'); ?></th>
+									<th><?php _e( 'Site Titles', 'wpmu-theme-info'); ?></th>
 								</tr>
 							</thead>
 							<tbody id="themes">
@@ -383,11 +405,11 @@ if ( !class_exists('cets_Theme_Info') ) {
 											_e( 'No'); 
 										}
 									} else {
-										_e( 'Theme Files Not Found!', 'cets-theme-info');
+										_e( 'Theme Files Not Found!', 'wpmu-theme-info');
 									}
 									echo ('</td><td class="num">' . sizeOf($blogs) . '</td><td>');
 									?>
-									<a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo $counter; ?>').toggle(400);"><?php _e( 'Show/Hide Sites', 'cets-theme-info'); ?></a>
+									<a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo $counter; ?>').toggle(400);"><?php _e( 'Show/Hide Sites', 'wpmu-theme-info'); ?></a>
 									<?php
 									echo ('<ul class="bloglist" id="bloglist_' . $counter  . '">');
 									foreach ( $blogs as $key => $row ){
@@ -407,10 +429,10 @@ if ( !class_exists('cets_Theme_Info') ) {
 							</tbody>
 							<tfoot>
 								<tr>
-									<th class="nocase"><?php _e( 'Used Themes', 'cets-theme-info'); ?></th>
-									<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
-									<th class="num"><?php _e( 'Total Sites', 'cets-theme-info'); ?></th>
-									<th><?php _e( 'Site Titles', 'cets-theme-info'); ?></th>
+									<th class="nocase"><?php _e( 'Used Themes', 'wpmu-theme-info'); ?></th>
+									<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'wpmu-theme-info'); ?></th>
+									<th class="num"><?php _e( 'Total Sites', 'wpmu-theme-info'); ?></th>
+									<th><?php _e( 'Site Titles', 'wpmu-theme-info'); ?></th>
 								</tr>
 							</tfoot>
 						</table>
@@ -418,9 +440,9 @@ if ( !class_exists('cets_Theme_Info') ) {
 						<table class="widefat">
 							<thead>
 								<tr>
-									<th class="nocase"><?php _e( 'Unused Themes', 'cets-theme-info'); ?></th>
-									<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
-									<th class="num"><?php _e( 'Total Sites', 'cets-theme-info'); ?></th>
+									<th class="nocase"><?php _e( 'Unused Themes', 'wpmu-theme-info'); ?></th>
+									<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'wpmu-theme-info'); ?></th>
+									<th class="num"><?php _e( 'Total Sites', 'wpmu-theme-info'); ?></th>
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
@@ -441,9 +463,9 @@ if ( !class_exists('cets_Theme_Info') ) {
 							</tbody>
 							<tfoot>
 								<tr>
-									<th class="nocase"><?php _e( 'Unused Themes', 'cets-theme-info'); ?></th>
-									<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'cets-theme-info'); ?></th>
-									<th class="num"><?php _e( 'Total Sites', 'cets-theme-info'); ?></th>
+									<th class="nocase"><?php _e( 'Unused Themes', 'wpmu-theme-info'); ?></th>
+									<th class="case" style="text-align: center !important;"><?php _e( 'Activated Sitewide', 'wpmu-theme-info'); ?></th>
+									<th class="num"><?php _e( 'Total Sites', 'wpmu-theme-info'); ?></th>
 									<th>&nbsp;</th>
 								</tr>
 							</tfoot>
