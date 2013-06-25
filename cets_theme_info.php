@@ -507,7 +507,5 @@ if ( ! class_exists('cets_Theme_Info') ) {
 		}
 		
 	} // END class cets_Theme_Info
-
-	$GLOBALS['cets_Theme_Info'] = new cets_Theme_Info();
 	
 }// END if class_exists
