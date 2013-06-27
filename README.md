@@ -75,11 +75,13 @@ __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 
 
 ## Changelog
-* __2.0-dev__ _[future plans/roadmap][4.1]_
-	* added build testing via travis-ci.org
-	* added custom unit tests @TODO
+* __TODO__ _[future plans/roadmap][4.1]_
+	* build testing via travis-ci.org
+	* custom unit tests
+* __2.0-dev__
 	* added Spanish translation by Eduardo Larequi (https://github.com/elarequi)
-	* TBD
+	* added uninstall function to remove settings on deactivation
+	* dropped PHP4 support + no testing on PHP version < 5.3
 * __1.9__
 	* moved development to GitHub
 	* full translation support
