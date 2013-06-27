@@ -58,7 +58,7 @@ if ( ! class_exists('cets_Theme_Info') ) {
 			add_action( 'switch_theme', array( &$this, 'on_switch_theme'));			
 
 			if ( is_network_admin() ) {
-				add_action( 'admin_enqueue_scripts', array( &$this, 'load_scripts'));
+				add_action( 'current_screen', array( &$this, 'load_scripts'));
 				add_action( 'network_admin_menu', array( &$this, 'add_page'));
 				add_filter( 'plugin_row_meta', array( $this, 'set_plugin_meta' ), 10, 2 );
 			}
@@ -475,14 +475,11 @@ if ( ! class_exists('cets_Theme_Info') ) {
 			$this->generate_theme_blog_list();
 		}
 		
-		function load_scripts() {
-			
-			$screen = get_current_screen();
-			
-			// if ( $screen->id == $this->page . '-network' ) {
+		function load_scripts( $screen ) {
+			if ( 'themes_page_wpmu-theme-info-network' == $screen->id ) {
 				wp_register_script( 'tablesort', plugins_url('js/tablesort-2.4.min.js', __FILE__), array(), '2.4', true);
 				wp_enqueue_script( 'tablesort' );
-			//}
+			}
 			
 		}
 		
