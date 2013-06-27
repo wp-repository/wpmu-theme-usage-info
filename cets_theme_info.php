@@ -73,13 +73,6 @@ if ( ! class_exists('cets_Theme_Info') ) {
 					$this->generate_theme_blog_list();
 			}
 		}
-
-		/**
-		* PHP 4 constructor
-		*/
-		function cets_Theme_Info() {
-			cets_Theme_Info::__construct();
-		}
 		
 		// Access this plugin’s working instance
 		public static function get_instance() {	
