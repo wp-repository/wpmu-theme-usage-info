@@ -63,8 +63,6 @@ if ( ! class_exists('cets_Theme_Info') ) {
 				add_filter( 'plugin_row_meta', array( $this, 'set_plugin_meta' ), 10, 2 );
 			}
 
-			load_plugin_textdomain( 'wpmu-theme-info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-
 			if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php') ))  {
 				// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
 				$gen_time = get_site_option('cets_theme_info_data_freshness');
@@ -227,7 +225,9 @@ if ( ! class_exists('cets_Theme_Info') ) {
 				'id'        => 'cets_theme_info_about',
 				'title'     => __('About', 'wpmu-theme-info'),
 				'callback'  => array( &$this, 'about_tab')
-			));       
+			));
+			
+			load_plugin_textdomain( 'wpmu-theme-info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		}
 
 		function about_tab() { ?>
