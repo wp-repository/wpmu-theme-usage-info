@@ -59,7 +59,7 @@ if ( ! class_exists('cets_Theme_Info') ) {
 
 			if ( is_network_admin() ) {
 				add_action( 'admin_enqueue_scripts', array( &$this, 'load_scripts'));
-				add_action( 'network_admin_menu', array( &$this, 'theme_info_add_page'));
+				add_action( 'network_admin_menu', array( &$this, 'add_page'));
 				add_filter( 'plugin_row_meta', array( $this, 'set_plugin_meta' ), 10, 2 );
 			}
 
@@ -204,17 +204,15 @@ if ( ! class_exists('cets_Theme_Info') ) {
 		}
 
 		// Create a function to add a menu item for site admins
-		function theme_info_add_page() {
-			// Add a submenu
-			if ( is_network_admin() )
-				$this->page = add_submenu_page(
-					'themes.php',
-					__( 'Theme Usage Info', 'wpmu-theme-info'),
-					__( 'Theme Usage Info', 'wpmu-theme-info'),
-					'manage_network',
-					'wpmu-theme-info',
-					array( &$this, 'theme_info_page')
-				);
+		function add_page() {
+			$this->page = add_submenu_page(
+				'themes.php',
+				__( 'Theme Usage Info', 'wpmu-theme-info'),
+				__( 'Theme Usage Info', 'wpmu-theme-info'),
+				'manage_network',
+				'wpmu-theme-info',
+				array( &$this, 'theme_info_page')
+			);
 
 			add_action("load-$this->page", array( &$this, 'help_tabs'));
 		}
