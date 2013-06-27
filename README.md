@@ -1,5 +1,6 @@
 # WPMU Theme Info 
 __Provides info to network admins and users on the popularity of themes.__
+
 Master: [![Build Status](https://travis-ci.org/wp-repository/wpmu-theme-usage-info.png?branch=master)](https://travis-ci.org/wp-repository/wpmu-theme-usage-info)
 
 ## Details
@@ -77,9 +78,9 @@ __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 
 ## Changelog
 * __TODO__ _[future plans/roadmap][4.1]_
-	* build testing via travis-ci.org
 	* custom unit tests
 * __2.0-dev__
+	* added build testing via travis-ci.org
 	* added Spanish translation by Eduardo Larequi (https://github.com/elarequi)
 	* added uninstall function to remove settings on deactivation
 	* dropped PHP4 support + no testing on PHP version < 5.3
