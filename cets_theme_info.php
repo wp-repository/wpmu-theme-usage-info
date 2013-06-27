@@ -70,6 +70,8 @@ if ( ! class_exists('cets_Theme_Info') ) {
 				if ((time() - $gen_time) > 3600 || strlen($gen_time) == 0)
 					$this->generate_theme_blog_list();
 			}
+			
+			register_deactivation_hook( __FILE__, array( 'cets_Theme_Info', 'deactivate_plugin') );
 		}
 		
 		// Access this plugin’s working instance
@@ -493,6 +495,11 @@ if ( ! class_exists('cets_Theme_Info') ) {
 			}
 			
 			return $links;
+		}
+		
+		function deactivate_plugin() {
+			delete_site_option( 'cets_theme_info_version' );
+			delete_site_option( 'cets_theme_info_data_freshness' );
 		}
 		
 	} // END class cets_Theme_Info
