@@ -27,8 +27,8 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 
 == Installation ==
 
-1. Place the cets\_theme\_info.php file and directory in the wp-content/mu-plugins folder.
-1. Go to site admin -> Theme Usage Info to view information and configure user access.
+1. Install by searching "WPMU Theme Info" on Plugins > Add New > Search
+2. Activate by clicking "Network Activate"
 
 == Screenshots ==
 
@@ -44,8 +44,6 @@ Nothing yet.
 == Changelog ==
 
 = 2.0-dev =
-* added build testing via travis-ci.org
-* added custom unit tests @TODO
 * added Spanish translation by Eduardo Larequi (https://github.com/elarequi)
 * TBD
 
