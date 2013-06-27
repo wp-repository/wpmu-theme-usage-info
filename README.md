@@ -1,5 +1,6 @@
-# WPMU Theme Info [![Build Status](https://travis-ci.org/wp-repository/wpmu-theme-usage-info.png?branch=master)](https://travis-ci.org/wp-repository/wpmu-theme-usage-info)
+# WPMU Theme Info 
 __Provides info to network admins and users on the popularity of themes.__
+Master: [![Build Status](https://travis-ci.org/wp-repository/wpmu-theme-usage-info.png?branch=master)](https://travis-ci.org/wp-repository/wpmu-theme-usage-info)
 
 ## Details
 [Homepage][1.1] | [WordPress.org][1.2]
