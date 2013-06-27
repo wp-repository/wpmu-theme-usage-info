@@ -20,7 +20,7 @@ env:
 
 # Grab the setup script and execute
 before_script:
-    - wget https://raw.github.com/benbalter/wordpress-plugin-tests/setup/setup.sh
+    - wget https://raw.github.com/wp-repository/wp-repository.assets/phpunit/setup.sh
     - source setup.sh
 
 script: phpunit
