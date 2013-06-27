@@ -80,7 +80,7 @@ __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 * __TODO__ _[future plans/roadmap][4.1]_
 	* custom unit tests
 * __2.0-dev__
-	* added build testing via travis-ci.org
+	* added build testing via travis-ci.org (https://travis-ci.org/wp-repository/wpmu-theme-usage-info)
 	* added Spanish translation by Eduardo Larequi (https://github.com/elarequi)
 	* added uninstall function to remove settings on deactivation
 	* dropped PHP4 support + no testing on PHP version < 5.3
