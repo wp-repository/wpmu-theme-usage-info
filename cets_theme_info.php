@@ -52,7 +52,8 @@ if ( ! class_exists('cets_Theme_Info') ) {
 		// Plugin instance
 		protected static $instance = NULL;
 
-		function __construct() {            
+		function __construct() {
+			load_plugin_textdomain( 'wpmu-theme-info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 			
 			add_filter( 'theme_action_links', array( &$this, 'action_links'), 9, 3);
 			add_action( 'switch_theme', array( &$this, 'on_switch_theme'));			
@@ -226,8 +227,6 @@ if ( ! class_exists('cets_Theme_Info') ) {
 				'title'     => __('About', 'wpmu-theme-info'),
 				'callback'  => array( &$this, 'about_tab')
 			));
-			
-			load_plugin_textdomain( 'wpmu-theme-info', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		}
 
 		function about_tab() { ?>
