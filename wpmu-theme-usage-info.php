@@ -122,7 +122,7 @@ class WPMU_Theme_Usage_Info {
 	 * @since 1.0.0
 	 */
 	function generate_theme_blog_list() {
-
+//		@TODO fetch all themes and list them with number of blogs even if count == 0
 		global $wpdb, $current_site, $wp_version;
 
 		$blogs  = $wpdb->get_results( "SELECT blog_id, domain, path FROM " . $wpdb->blogs . " WHERE site_id = {$current_site->id} ORDER BY domain ASC" );
@@ -135,32 +135,41 @@ class WPMU_Theme_Usage_Info {
 				$cto = wp_get_theme();
 				$ct = $cto->stylesheet;
 
-				if( constant( 'VHOST' ) == 'yes' ) {
+				if ( constant( 'VHOST' ) == 'yes' ) {
 					$blogurl = $blog->domain;
 				} else {
 					$blogurl = trailingslashit( $blog->domain . $blog->path );
 				}
 
 				if ( array_key_exists( $ct, $processedthemes ) == false ) {
-					//echo ("<p> Blogid = " .  $blog->blog_id . " & current theme = " . $ct . "</p>");
-					$blogthemes[$ct][0] = array( 'blogid' => $blog->blog_id, /*'path' => $path, 'domain' => $domain,*/ 'name' => get_bloginfo( 'name' ), 'blogurl' => $blogurl );	
-					$processedthemes[$ct] = true;
+					$blogthemes[ $ct ][0] = array(
+						'blogid' => $blog->blog_id,
+						/*'path' => $path, 'domain' => $domain,*/
+						'name' => get_bloginfo( 'name' ),
+						'blogurl' => $blogurl,
+					);	
+					$processedthemes[ $ct ] = true;
 				} else {
 					//get the size of the current array of blogs
 					$count = sizeof( $blogthemes[ $ct ] );
-					//echo ("<p> Blogid = " .  $blog->blog_id . " & current theme = " . $ct . "</p>");
-					$blogthemes["$ct"][ $count ] = array( 'blogid' => $blog->blog_id,/* 'path' => $path, 'domain' => $domain,*/ 'name' => get_bloginfo( 'name' ), 'blogurl' => $blogurl );
-				}			
+					$blogthemes["$ct"][ $count ] = array(
+						'blogid' => $blog->blog_id,
+						/* 'path' => $path, 'domain' => $domain,*/
+						'name' => get_bloginfo( 'name' ),
+						'blogurl' => $blogurl,
+					);
+				}
+				
 				restore_current_blog();
+				
 			}
 		}
+		
 		// Set the site option to hold all this
 		update_site_option( 'cets_theme_info_data', $blogthemes );
 		update_site_option( 'cets_theme_info_data_freshness', time() );
 		
 	} // END generate_theme_blog_list()
-
-	// $actions       = apply_filters( 'theme_action_links', $actions, $theme );
 	
 	/**
 	 * @TODO does not work with THX38 !!
@@ -184,7 +193,7 @@ class WPMU_Theme_Usage_Info {
 		//get the list of blogs for this theme
 		$data = get_site_option( 'cets_theme_info_data' );
 
-		if ( isset( $data[ $theme->stylesheet] ) ) {
+		if ( isset( $data[ $theme->stylesheet ] ) ) {
 			$blogs = $data[ $theme->stylesheet ];
 		} else {
 			$blogs = array();
@@ -204,8 +213,6 @@ class WPMU_Theme_Usage_Info {
 		}
 		if ( sizeOf( $blogs ) > 0 ) {
 			$text .= '</a>';
-		}
-		if ( sizeOf( $blogs ) > 0 ) {
 			$text .= '<div id="' . $name . '" style="display: none"><div>';
 
 			// loop through the list of blogs and display their titles
@@ -260,7 +267,7 @@ class WPMU_Theme_Usage_Info {
 					<?php _e( 'Settings saved.' ) ?>
 				</p>
 			</div>
-	   <?php
+		<?php
 		}
 
 		// get the usage setting
@@ -287,11 +294,11 @@ class WPMU_Theme_Usage_Info {
 
 		$list = get_site_option( 'cets_theme_info_data' );
 		ksort( $list );
-
+		
 		// figure out what themes have not been used at all
 //		$unused_themes = array();
 //		foreach ( $themes as $theme ) {
-//			if (!array_key_exists($theme->stylesheet, $list)) {
+//			if ( !array_key_exists( $theme->stylesheet, $list ) ) {
 //				//if (!array_key_exists($theme['Name'], $list))
 //				array_push($unused_themes, $theme);
 //

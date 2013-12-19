@@ -37,9 +37,11 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 3. User view of theme popularity information.
 4. User view of blogs using theme.
 
-== Frequently Asked Questions ==
+== Upgrade Notice ==
 
-Nothing yet.
+**ATTENTION:**
+When you update to version 2.1 the plugin gets deactivated automatically.
+You need to reactivate by clicking "Network Activate". No data is lost.
 
 == Changelog ==
 
