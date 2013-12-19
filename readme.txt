@@ -1,9 +1,9 @@
-=== WPMU Theme Info ===
+=== WPMU Theme Usage Info ===
 Contributors: DeannaS, kgraeme, MadtownLems, wp-repository
 Tags: Wordpress Multiuser, Themes, MU, WPMU, multisite, network
 Requires at least: 3.4
-Tested up to: 3.5.1
-Stable tag: 2.0-dev
+Tested up to: 3.9-alpha
+Stable tag: 2.0-beta
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
