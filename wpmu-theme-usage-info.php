@@ -4,7 +4,7 @@ Plugin Name: WPMU Theme Usage Info
 Plugin URI: http://wordpress.org/plugins/wpmu-theme-usage-info/
 Description: WordPress plugin for letting network admins easily see what themes are actively used on the network
 Version: 2.0-beta
-Author: Kevin Graeme, <a href="http://deannaschneider.wordpress.com/" target="_target">Deanna Schneider</a> & <a href="http://www.jasonlemahieu.com/" target="_target">Jason Lemahieu</a>
+Author: Kevin Graeme, Deanna Schneider & Jason Lemahieu
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html 
 Text Domain: wpmu-theme-usage-info
@@ -30,6 +30,11 @@ Network: true
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+/**
+ * @license		http://www.gnu.org/licenses/gpl-2.0.html GPLv2
+ * @package		WP-Repository\WPMU_Theme_Usage_Info
+ * @version		2.0-beta
+ */
 
 //avoid direct calls to this file
 if ( ! function_exists( 'add_filter' ) ) {
@@ -38,55 +43,76 @@ if ( ! function_exists( 'add_filter' ) ) {
 	exit();
 }
 
+/**
+ * Main class to run the plugin
+ * 
+ * @since	1.0.0
+ */
 class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Holds a copy of the object for easy reference.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var object
+	 * 
+	 * @since	1.0.0
+	 * @static
+	 * @access	private
+	 * @var		object	$instance
 	 */
 	private static $instance;
 	
 	/**
 	 * Current version of the plugin.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string
+	 * 
+	 * @since	1.0.0
+	 * @access	public
+	 * @var		string	$version
 	 */
 	public $version = '2.0-beta';
 	
 	/**
 	 * Constructor. Hooks all interactions to initialize the class.
-	 *
-	 * @since 1.0
+	 * 
+	 * @todo	can the blog list generation moved out of init?
+	 * 
+	 * @since	1.0.0
+	 * @access	public
+	 * 
+	 * @see		add_action()
+	 * @see		add_filter()
+	 * @see		get_site_option()
+	 * @uses	generate_theme_blog_list()
+	 * 
+	 * @return	void
 	 */
 	function __construct() {
 		
 		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
-		add_action( 'switch_theme', array( &$this, 'on_switch_theme' ));	
+		add_action( 'switch_theme', array( &$this, 'switch_theme' ));	
 		add_action( 'load-themes_page_wpmu-theme-usage-info', array( $this, 'load_admin_assets' ) );
 		add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ));
 		
-		add_filter( 'plugin_row_meta', array( $this, 'set_plugin_meta' ), 10, 2 );
+		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 		add_filter( 'theme_action_links', array( &$this, 'action_links' ), 9, 3);
 
-		if ( in_array( basename($_SERVER['PHP_SELF']), array('themes.php' ) ))  {
+		if ( in_array( basename( $_SERVER['PHP_SELF'] ), array( 'themes.php' ) ) )  {
 			// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
 			$gen_time = get_site_option( 'cets_theme_info_data_freshness' );
 
-			if ( ( time() - $gen_time ) > 3600 || strlen( $gen_time ) == 0 )
+			if ( ( time() - $gen_time ) > 3600 || strlen( $gen_time ) == 0 ) {
 				$this->generate_theme_blog_list();
+			}
 		}
 		
 	} // END __construct()
 
 	/**
 	 * Getter method for retrieving the object instance.
-	 *
-	 * @since 1.0.0
+	 * 
+	 * @since	1.0.0
+	 * @static
+	 * @access	public
+	 * 
+	 * @return	object	WPMU_Theme_Usage_Info::$instance
 	 */
 	public static function get_instance() {
 
@@ -95,11 +121,18 @@ class WPMU_Theme_Usage_Info {
 	} // END get_instance()
 	
 	/**
-	 * @TODO
-	 *
-	 * @since 1.0.0
+	 * Fetch sites and the active plugins every single site
+	 * 
+	 * @since	1.0.0
+	 * @access	private
+	 * 
+	 * @see		get_site_option()
+	 * @see		add_site_option()
+	 * @see		update_site_option( )
+	 * 
+	 * @return	void
 	 */
-	function maybe_update() {
+	private function maybe_update() {
 
 		$this_version = $this->version;
 		$plugin_version = get_site_option( 'cets_theme_info_version', 0 );
@@ -117,11 +150,24 @@ class WPMU_Theme_Usage_Info {
 	}
 	
 	/**
-	 * @TODO
-	 *
-	 * @since 1.0.0
+	 * Fetch sites and the active themes for every single site
+	 * 
+	 * @since	1.0.0
+	 * @access	private
+	 * 
+	 * @see		switch_to_blog()
+	 * @see		wp_get_theme()
+	 * @see		trailingslashit()
+	 * @see		get_bloginfo()
+	 * @see		restore_current_blog()
+	 * @see		update_site_option()
+	 * 
+	 * @global	object	$wpdb
+	 * @global	array	$current_site
+	 * @global	string	$wp_version
+	 * @return	void
 	 */
-	function generate_theme_blog_list() {
+	private function generate_theme_blog_list() {
 //		@TODO fetch all themes and list them with number of blogs even if count == 0
 		global $wpdb, $current_site, $wp_version;
 
@@ -172,11 +218,22 @@ class WPMU_Theme_Usage_Info {
 	} // END generate_theme_blog_list()
 	
 	/**
-	 * @TODO does not work with THX38 !!
-	 *
-	 * @since 1.0.0
-	 */	
-	function action_links( $actions, $theme ){
+	 * Fetch sites and the active plugins for every single site
+	 * 
+	 * @todo	does not work with THX38 !!
+	 * 
+	 * @since	1.0.0
+	 * @access	public
+	 * 
+	 * @see		wp_get_theme()
+	 * @see		get_site_option()
+	 * @see		is_super_admin()
+	 * 
+	 * @global	array	$actions
+	 * @global	string	$theme
+	 * @return	array	$actions
+	 */
+	public function action_links( $actions, $theme ){
 
 		if ( !is_object( $theme ) ) {
 			$theme = wp_get_theme( $theme );
@@ -232,11 +289,18 @@ class WPMU_Theme_Usage_Info {
 	} // END action_links()
 	
 	/**
-	 * Create a function to add a menu item for site admins
-	 *
-	 * @since 1.0.0
+	 * Add the menu item
+	 * 
+	 * @since	1.0.0
+	 * @access	public
+	 * 
+	 * @see		add_submenu_page()
+	 * @action	network_admin_menu
+	 * @hook	filter	wpmu_theme_usage_info_cap	Defaults 'manage_network'
+	 * 
+	 * @return	void
 	 */
-	function network_admin_menu() {
+	public function network_admin_menu() {
 		
 		add_submenu_page(
 			'themes.php',
@@ -250,11 +314,25 @@ class WPMU_Theme_Usage_Info {
 	} // END network_admin_menu()
 	
 	/**
-	 * @TODO
-	 *
-	 * @since 1.0.0
+	 * Create a function to actually display stuff on plugin usage
+	 * 
+	 * @since	1.0.0
+	 * @access	public
+	 * 
+	 * @see		update_site_option()
+	 * @see		get_site_option()
+	 * @see		WP_Theme::get_allowed_on_network()
+	 * @see		wp_get_themes()
+	 * @see		add_query_arg()
+	 * @see		network_admin_url(
+	 * @see		_e(
+	 * @see		checked(
+	 * @uses	maybe_update()
+	 * 
+	 * @param	string	$active_tab	Defaults to ''
+	 * @return	void
 	 */
-	function theme_info_page( $active_tab = '' ) {
+	public function theme_info_page( $active_tab = '' ) {
 		
 		$this->maybe_update();
 
@@ -459,22 +537,36 @@ class WPMU_Theme_Usage_Info {
 	} // END theme_info_page()
 	
 	/**
-	 * @todo
-	 *
-	 * @since 1.0.0
+	 * Regenerate the statistics on every theme switch network-wide
+	 * 
+	 * @since	1.0.0
+	 * @access	public
+	 * 
+	 * @uses	generate_plugin_blog_list()
+	 * @action	switch_theme
+	 * 
+	 * @return	void
 	 */
-	function on_switch_theme() {
+	public function switch_theme() {
 
 		$this->generate_theme_blog_list();
 		
-	} // END on_switch_theme()
+	} // END switch_theme()
 	
 	/**
-	 * @todo
-	 *
-	 * @since 1.0.0
+	 * Load assets on the page
+	 * 
+	 * @since	1.0.0
+	 * @access	public
+	 * 
+	 * @see		wp_enqueue_script()
+	 * @see		plugins_url()
+	 * @action	load-themes_page_wpmu-theme-usage-info
+	 * @hook	filter	wpmu_theme_usage_info_debug	Defaults to {@see WP_DEBUG}
+	 * 
+	 * @return	void
 	 */
-	function load_admin_assets() {
+	public function load_admin_assets() {
 		
 		$dev = apply_filters( 'wpmu_theme_usage_info_debug', WP_DEBUG ) ? '' : '.min';
 
@@ -484,8 +576,15 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Load the plugin's textdomain hooked to 'plugins_loaded'.
-	 *
-	 * @since 2.0.0
+	 * 
+	 * @since	1.0.0
+	 * @access	public
+	 * 
+	 * @see		load_plugin_textdomain()
+	 * @see		plugin_basename()
+	 * @action	plugins_loaded
+	 * 
+	 * @return	void
 	 */
 	function load_plugin_textdomain() {
 		
@@ -498,11 +597,18 @@ class WPMU_Theme_Usage_Info {
 	} // END load_plugin_textdomain()
 	
 	/**
-	 * @todo
-	 *
-	 * @since 2.0.0
+	 * Add link to the GitHub repo to the plugin listing
+	 * 
+	 * @since	1.0.0
+	 * @access	public
+	 * 
+	 * @see		plugin_basename()
+	 * 
+	 * @param	array	$links
+	 * @param	string	$file
+	 * @return	array	$links
 	 */
-	function set_plugin_meta( $links, $file ) {
+	function plugin_row_meta( $links, $file ) {
 
 		if ( $file == plugin_basename( __FILE__ ) ) {
 			return array_merge(
@@ -513,8 +619,16 @@ class WPMU_Theme_Usage_Info {
 
 		return $links;
 		
-	} // END set_plugin_meta()
+	} // END plugin_row_meta()
 
 } // END class WPMU_Theme_Usage_Info
-	
+
+/**
+ * Instantiate the main class
+ * 
+ * @since	1.0.0
+ * @access	public
+ * 
+ * @var	object	$wpmu_theme_usage_info holds the instantiated class {@uses WPMU_Theme_Usage_Info}
+ */
 $wpmu_theme_usage_info = new WPMU_Theme_Usage_Info;
