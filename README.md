@@ -1,7 +1,5 @@
-# WPMU Theme Info 
+# WPMU Theme Usage Info 
 __Provides info to network admins and users on the popularity of themes.__
-
-Master: [![Build Status](https://travis-ci.org/wp-repository/wpmu-theme-usage-info.png?branch=master)](https://travis-ci.org/wp-repository/wpmu-theme-usage-info)
 
 ## Details
 [Homepage][1.1] | [WordPress.org][1.2]
@@ -18,7 +16,7 @@ Master: [![Build Status](https://travis-ci.org/wp-repository/wpmu-theme-usage-in
 [1.4]: https://github.com/wp-repository/wpmu-theme-usage-info/issues
 [1.5]: https://github.com/wp-repository/wpmu-theme-usage-info/archive/1.9.zip
 [1.6]: http://plugins.trac.wordpress.org/browser/wpmu-theme-usage-info/
-[1.7]: https://translate.foe-services.de/projects/cets-theme-info
+[1.7]: http://wp-translate.org/projects/wpmu-theme-usage-info
 [1.8]: https://github.com/wp-repository/wpmu-theme-usage-info/archive/master.zip
 
 ### Description
@@ -80,7 +78,6 @@ __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 * __TODO__ _[future plans/roadmap][4.1]_
 	* custom unit tests
 * __2.0-dev__
-	* added build testing via travis-ci.org (https://travis-ci.org/wp-repository/wpmu-theme-usage-info)
 	* added Spanish translation by Eduardo Larequi (https://github.com/elarequi)
 	* added uninstall function to remove settings on deactivation
 	* dropped PHP4 support + no testing on PHP version < 5.3

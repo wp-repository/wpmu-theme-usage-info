@@ -21,9 +21,9 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 
 = Development =
 
-* GitHub Repository: [wpmu-theme-usage-info](https://github.com/wp-repository/wpmu-theme-usage-info)
+* GitHub Repository: [wp-repository](https://github.com/wp-repository) / [wpmu-theme-usage-info](https://github.com/wp-repository/wpmu-theme-usage-info)
 * Issue-Tracker: [WPMU Theme Info Issues](https://github.com/wp-repository/wpmu-theme-usage-info/issues) **Please use the Issue-Tracker at GitHub!!**
-* Translation: [Translate > WPMU Theme Info](https://translate.foe-services.de/projects/cets-theme-info)
+* Translation: [Translate > WPMU Theme Usage Info](http://wp-translate.org/projects/wpmu-theme-usage-info)
 
 == Installation ==
 
