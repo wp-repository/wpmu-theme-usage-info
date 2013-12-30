@@ -6,11 +6,11 @@ Description: WordPress plugin for letting network admins easily see what themes 
 Version: 2.0-beta
 Author: Kevin Graeme, Deanna Schneider & Jason Lemahieu
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html 
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: wpmu-theme-usage-info
 Domain Path: /languages
 Network: true
-      
+
 	WPMU Theme Usage Info
 
 	Copyright (C) 2009 - 2013 Board of Regents of the University of Wisconsin System
@@ -45,14 +45,14 @@ if ( ! function_exists( 'add_filter' ) ) {
 
 /**
  * Main class to run the plugin
- * 
+ *
  * @since	1.0.0
  */
 class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Holds a copy of the object for easy reference.
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @static
 	 * @access	private
@@ -62,7 +62,7 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Current version of the plugin.
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	public
 	 * @var		string	$version
@@ -71,17 +71,17 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Constructor. Hooks all interactions to initialize the class.
-	 * 
+	 *
 	 * @todo	can the blog list generation moved out of init?
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	public
-	 * 
+	 *
 	 * @see		add_action()
 	 * @see		add_filter()
 	 * @see		get_site_option()
 	 * @uses	generate_theme_blog_list()
-	 * 
+	 *
 	 * @return	void
 	 */
 	function __construct() {
@@ -107,11 +107,11 @@ class WPMU_Theme_Usage_Info {
 
 	/**
 	 * Getter method for retrieving the object instance.
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @static
 	 * @access	public
-	 * 
+	 *
 	 * @return	object	WPMU_Theme_Usage_Info::$instance
 	 */
 	public static function get_instance() {
@@ -122,14 +122,14 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Fetch sites and the active plugins every single site
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	private
-	 * 
+	 *
 	 * @see		get_site_option()
 	 * @see		add_site_option()
 	 * @see		update_site_option( )
-	 * 
+	 *
 	 * @return	void
 	 */
 	private function maybe_update() {
@@ -151,17 +151,17 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Fetch sites and the active themes for every single site
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	private
-	 * 
+	 *
 	 * @see		switch_to_blog()
 	 * @see		wp_get_theme()
 	 * @see		trailingslashit()
 	 * @see		get_bloginfo()
 	 * @see		restore_current_blog()
 	 * @see		update_site_option()
-	 * 
+	 *
 	 * @global	object	$wpdb
 	 * @global	array	$current_site
 	 * @global	string	$wp_version
@@ -219,16 +219,16 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Fetch sites and the active plugins for every single site
-	 * 
+	 *
 	 * @todo	does not work with THX38 !!
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	public
-	 * 
+	 *
 	 * @see		wp_get_theme()
 	 * @see		get_site_option()
 	 * @see		is_super_admin()
-	 * 
+	 *
 	 * @global	array	$actions
 	 * @global	string	$theme
 	 * @return	array	$actions
@@ -279,7 +279,7 @@ class WPMU_Theme_Usage_Info {
 			}
 			$text .= '</li>';
 			$text .= '</div></div>';
-		} 
+		}
 		$text .= '</span>';
 
 		array_push( $actions, $text );
@@ -290,14 +290,14 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Add the menu item
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	public
-	 * 
+	 *
 	 * @see		add_submenu_page()
 	 * @action	network_admin_menu
 	 * @hook	filter	wpmu_theme_usage_info_cap	Defaults 'manage_network'
-	 * 
+	 *
 	 * @return	void
 	 */
 	public function network_admin_menu() {
@@ -315,10 +315,10 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Create a function to actually display stuff on plugin usage
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	public
-	 * 
+	 *
 	 * @see		update_site_option()
 	 * @see		get_site_option()
 	 * @see		WP_Theme::get_allowed_on_network()
@@ -328,7 +328,7 @@ class WPMU_Theme_Usage_Info {
 	 * @see		_e(
 	 * @see		checked(
 	 * @uses	maybe_update()
-	 * 
+	 *
 	 * @param	string	$active_tab	Defaults to ''
 	 * @return	void
 	 */
@@ -401,7 +401,7 @@ class WPMU_Theme_Usage_Info {
 				$active_tab = 'settings';
 			} else {
 				$active_tab = 'themes';
-			} 
+			}
 			?>
 
 			<h3 class="nav-tab-wrapper">
@@ -495,7 +495,7 @@ class WPMU_Theme_Usage_Info {
 											if ( $is_activated_sitewide ) {
 												_e( 'Yes' );
 											} else {
-												_e( 'No' ); 
+												_e( 'No' );
 											}
 										} else {
 											_e( 'Theme Files Not Found!', 'wpmu-theme-usage-info' );
@@ -533,18 +533,18 @@ class WPMU_Theme_Usage_Info {
 				<?php } ?>
 		</div>
 		
-	<?php 
+	<?php
 	} // END theme_info_page()
 	
 	/**
 	 * Regenerate the statistics on every theme switch network-wide
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	public
-	 * 
+	 *
 	 * @uses	generate_plugin_blog_list()
 	 * @action	switch_theme
-	 * 
+	 *
 	 * @return	void
 	 */
 	public function switch_theme() {
@@ -555,15 +555,15 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Load assets on the page
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	public
-	 * 
+	 *
 	 * @see		wp_enqueue_script()
 	 * @see		plugins_url()
 	 * @action	load-themes_page_wpmu-theme-usage-info
 	 * @hook	filter	wpmu_theme_usage_info_debug	Defaults to {@see WP_DEBUG}
-	 * 
+	 *
 	 * @return	void
 	 */
 	public function load_admin_assets() {
@@ -576,14 +576,14 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Load the plugin's textdomain hooked to 'plugins_loaded'.
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	public
-	 * 
+	 *
 	 * @see		load_plugin_textdomain()
 	 * @see		plugin_basename()
 	 * @action	plugins_loaded
-	 * 
+	 *
 	 * @return	void
 	 */
 	function load_plugin_textdomain() {
@@ -598,12 +598,12 @@ class WPMU_Theme_Usage_Info {
 	
 	/**
 	 * Add link to the GitHub repo to the plugin listing
-	 * 
+	 *
 	 * @since	1.0.0
 	 * @access	public
-	 * 
+	 *
 	 * @see		plugin_basename()
-	 * 
+	 *
 	 * @param	array	$links
 	 * @param	string	$file
 	 * @return	array	$links
@@ -625,10 +625,10 @@ class WPMU_Theme_Usage_Info {
 
 /**
  * Instantiate the main class
- * 
+ *
  * @since	1.0.0
  * @access	public
- * 
+ *
  * @var	object	$wpmu_theme_usage_info holds the instantiated class {@uses WPMU_Theme_Usage_Info}
  */
 $wpmu_theme_usage_info = new WPMU_Theme_Usage_Info;
