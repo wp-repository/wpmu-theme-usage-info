@@ -54,7 +54,7 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 ## License
 __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 
-	WPMU Theme Info
+	WPMU Theme Usage Info
 
 	Copyright (C) 2009 - 2013 Board of Regents of the University of Wisconsin System
 	Cooperative Extension Technology Services
@@ -75,12 +75,11 @@ __[GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)__
 
 
 ## Changelog
-* __TODO__ _[future plans/roadmap][4.1]_
-	* custom unit tests
-* __2.0-dev__
+* __2.0__
 	* added Spanish translation by Eduardo Larequi (https://github.com/elarequi)
 	* added uninstall function to remove settings on deactivation
 	* dropped PHP4 support + no testing on PHP version < 5.3
+	* @todo use Transients API for caching usage data
 * __1.9__
 	* moved development to GitHub
 	* full translation support

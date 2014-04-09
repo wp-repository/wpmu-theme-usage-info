@@ -12,8 +12,7 @@ Domain Path: /languages
 Network: true
 
 	WPMU Theme Usage Info
-
-	Copyright (C) 2009 - 2013 Board of Regents of the University of Wisconsin System
+	Copyright (C) 2009 - 2014 Board of Regents of the University of Wisconsin System
 	Cooperative Extension Technology Services
 	University of Wisconsin-Extension
 
@@ -37,9 +36,9 @@ Network: true
  */
 
 //avoid direct calls to this file
-if ( ! function_exists( 'add_filter' ) ) {
-	header('Status: 403 Forbidden' );
-	header('HTTP/1.1 403 Forbidden' );
+if ( !defined( 'ABSPATH' ) ) {
+	header( 'Status: 403 Forbidden' );
+	header( 'HTTP/1.1 403 Forbidden' );
 	exit();
 }
 
