@@ -75,14 +75,14 @@ class WPMU_Theme_Usage_Info {
 	private function setup_actions() {
 
 		/** Actions ***********************************************************/
-		add_action( 'switch_theme',       array( $this, 'switch_theme' ) );
+		add_action( 'switch_theme',       array( $this, 'switch_theme'           ) );
 		add_action( 'plugins_loaded',     array( $this, 'load_plugin_textdomain' ) );
-		add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
+		add_action( 'network_admin_menu', array( $this, 'network_admin_menu'     ) );
 		add_action( 'load-themes_page_wpmu-theme-usage-info', array( $this, 'load_admin_assets' ) );
 
 		/** Filters ***********************************************************/
 		add_filter( 'plugin_row_meta',    array( $this, 'plugin_row_meta' ), 10, 2 );
-		add_filter( 'theme_action_links', array( $this, 'action_links' ),    9,  3 );
+		add_filter( 'theme_action_links', array( $this, 'action_links' ),     9, 3 );
 
 		register_activation_hook( __FILE__, array( 'WPMU_Theme_Usage_Info', 'activation' ) );
 
@@ -125,32 +125,6 @@ class WPMU_Theme_Usage_Info {
 	} // END __construct()
 
 	/**
-	 * Fetch sites and the active plugins every single site
-	 *
-	 * @since 1.0.0
-	 *
-	 * @see get_site_option()
-	 * @see add_site_option()
-	 * @see update_site_option( )
-	 */
-	private function maybe_update() {
-
-		$this_version = $this->version;
-		$plugin_version = get_site_option( 'cets_theme_info_version', 0 );
-
-		if ( version_compare( $plugin_version, $this_version, '<' ) ) {
-			add_site_option( 'cets_theme_info_data_freshness', 1 );
-			update_site_option( 'cets_theme_info_data_freshness', 2 );
-		}
-
-		if ( $plugin_version == 0 ) {
-			add_site_option( 'cets_theme_info_version', $this_version );
-		} else {
-			update_site_option( 'cets_theme_info_version', $this_version );
-		}
-	}
-
-	/**
 	 * Fetch sites and the active themes for every single site
 	 *
 	 * @todo fetch all themes and list them with number of blogs even if count == 0
@@ -181,7 +155,7 @@ class WPMU_Theme_Usage_Info {
 			foreach ( $blogs as $blog ) {
 				switch_to_blog( $blog->blog_id );
 				$cto = wp_get_theme();
-				$ct = $cto->stylesheet;
+				$ct  = $cto->stylesheet;
 
 				if ( constant( 'VHOST' ) == 'yes' ) {
 					$blogurl = $blog->domain;
@@ -214,7 +188,7 @@ class WPMU_Theme_Usage_Info {
 		}
 
 		ksort( $blogthemes );
-		set_site_transient( 'theme_info_data', $blogthemes, 24 * HOUR_IN_SECONDS );
+		set_site_transient( 'theme_stats_data', $blogthemes, 24 * HOUR_IN_SECONDS );
 
 		return $blogthemes;
 
@@ -250,7 +224,7 @@ class WPMU_Theme_Usage_Info {
 		}
 
 		//get the list of blogs for this theme
-		$data = get_site_option( 'cets_theme_info_data' );
+		$data = get_site_transient( 'theme_stats_data' );
 
 		if ( isset( $data[ $theme->stylesheet ] ) ) {
 			$blogs = $data[ $theme->stylesheet ];
@@ -395,7 +369,7 @@ class WPMU_Theme_Usage_Info {
 			</table>
 			<div class="tablenav bottom">
 				<div class="alignleft actions bulkactions">
-					<form name="plugininfoform" action="" method="post">
+					<form name="regen" action="" method="post">
 						<?php submit_button( __( 'Regenerate', 'wpmu-plugin-stats' ), 'primary', 'submit', false ); ?>
 						<input type="hidden" name="action" value="update" />
 					</form>
