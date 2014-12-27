@@ -84,7 +84,7 @@ class WPMU_Theme_Usage_Info {
 		add_filter( 'plugin_row_meta',    array( $this, 'plugin_row_meta' ), 10, 2 );
 		add_filter( 'theme_action_links', array( $this, 'action_links' ),    9,  3 );
 
-//		register_activation_hook( __FILE__, array( 'WPMU_Plugin_Stats', 'activation' ) );
+		register_activation_hook( __FILE__, array( 'WPMU_Theme_Usage_Info', 'activation' ) );
 
 	} // END setup_actions()
 
@@ -624,6 +624,25 @@ class WPMU_Theme_Usage_Info {
 		return $links;
 		
 	} // END plugin_row_meta()
+
+	/**
+	 * Pre-Activation checks
+	 *
+	 * Checks if this is a multisite installation
+	 *
+	 * @since 2.0.0
+	 */
+	public static function activation() {
+
+		if ( ! is_multisite() ) {
+			wp_die( __( 'This plugin only runs on multisite installations. The functionality makes no sense for WP single sites.', 'wpmu-theme-usage-info' ) );
+		}
+
+		// Delete legacy options
+		delete_site_option( 'cets_theme_info_data' );
+		delete_site_option( 'cets_theme_info_data_freshness' );
+
+	} // END activation()
 
 } // END class WPMU_Theme_Usage_Info
 
