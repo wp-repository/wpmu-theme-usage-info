@@ -1,10 +1,17 @@
 <?php
+/**
+ * @author    Christian Foellmann & Jason Lemahieu and Kevin Graeme (Cooperative Extension Technology Services)
+ * @copyright Copyright (c) 2009 - 2014, Cooperative Extension Technology Services
+ * @license   http://www.gnu.org/licenses/gpl-2.0.html GPLv2
+ * @package   WP-Repository\WPMU_Theme_Usage_Info
+ * @version   2.0.0
+ */
 /*
 Plugin Name: WPMU Theme Usage Info
-Plugin URI: http://wordpress.org/plugins/wpmu-theme-usage-info/
+Plugin URI: https://wordpress.org/plugins/wpmu-theme-usage-info/
 Description: WordPress plugin for letting network admins easily see what themes are actively used on the network
-Version: 2.0-beta
-Author: Kevin Graeme, Deanna Schneider & Jason Lemahieu
+Version: 2.0.0
+Author: Christian Foellmann & Jason Lemahieu
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: wpmu-theme-usage-info
@@ -12,7 +19,9 @@ Domain Path: /languages
 Network: true
 
 	WPMU Theme Usage Info
-	Copyright (C) 2009 - 2014 Board of Regents of the University of Wisconsin System
+
+	Copyright (C) 2014 Christian Foellmann (http://christian.foellmann.de)
+	Copyright (C) 2009 - 2013 Board of Regents of the University of Wisconsin System
 	Cooperative Extension Technology Services
 	University of Wisconsin-Extension
 
@@ -29,23 +38,14 @@ Network: true
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-/**
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GPLv2
- * @package		WP-Repository\WPMU_Theme_Usage_Info
- * @version		2.0-beta
- */
 
-//avoid direct calls to this file
-if ( !defined( 'ABSPATH' ) ) {
-	header( 'Status: 403 Forbidden' );
-	header( 'HTTP/1.1 403 Forbidden' );
-	exit();
-}
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 /**
  * Main class to run the plugin
  *
- * @since	1.0.0
+ * @since 1.0.0
  */
 class WPMU_Theme_Usage_Info {
 	
