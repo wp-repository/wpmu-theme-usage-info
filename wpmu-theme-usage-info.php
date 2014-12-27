@@ -153,6 +153,8 @@ class WPMU_Theme_Usage_Info {
 	/**
 	 * Fetch sites and the active themes for every single site
 	 *
+	 * @todo fetch all themes and list them with number of blogs even if count == 0
+	 *
 	 * @since 1.0.0
 	 *
 	 * @see switch_to_blog()
@@ -165,12 +167,14 @@ class WPMU_Theme_Usage_Info {
 	 * @global object $wpdb
 	 * @global array $current_site
 	 * @global string $wp_version
+	 * @return array
 	 */
 	private function generate_theme_blog_list() {
-//		@TODO fetch all themes and list them with number of blogs even if count == 0
+
 		global $wpdb, $current_site, $wp_version;
 
-		$blogs  = $wpdb->get_results( "SELECT blog_id, domain, path FROM " . $wpdb->blogs . " WHERE site_id = {$current_site->id} ORDER BY domain ASC" );
+		$select     = $wpdb->prepare( "SELECT blog_id, domain, path FROM $wpdb->blogs WHERE site_id = %d ORDER BY domain ASC", $current_site->id );
+		$blogs      = $wpdb->get_results( $select );
 		$blogthemes = array();
 		$processedthemes = array();
 		
@@ -209,10 +213,11 @@ class WPMU_Theme_Usage_Info {
 				
 			}
 		}
-		
-		// Set the site option to hold all this
-		update_site_option( 'cets_theme_info_data', $blogthemes );
-		update_site_option( 'cets_theme_info_data_freshness', time() );
+
+		ksort( $blogthemes );
+		set_site_transient( 'theme_info_data', $blogthemes, 24 * HOUR_IN_SECONDS );
+
+		return $blogthemes;
 		
 	} // END generate_theme_blog_list()
 	
@@ -297,8 +302,8 @@ class WPMU_Theme_Usage_Info {
 		
 		add_submenu_page(
 			'themes.php',
-			__( 'Theme Usage Info', 'wpmu-theme-usage-info' ),
-			__( 'Theme Usage Info', 'wpmu-theme-usage-info' ),
+			__( 'Theme Statistics', 'wpmu-theme-usage-info' ),
+			__( 'Statistics', 'wpmu-theme-usage-info' ),
 			apply_filters( 'wpmu_theme_usage_info_cap', 'manage_network' ),
 			'wpmu-theme-usage-info',
 			array( $this, 'theme_info_page' )
@@ -314,19 +319,12 @@ class WPMU_Theme_Usage_Info {
 	 * @param string $active_tab Defaults to ''
 	 */
 	public function theme_info_page( $active_tab = '' ) {
-		
-		$this->maybe_update();
 
-		//Handle updates
-		if ( isset( $_POST['action'] ) && $_POST['action'] == 'update' ) {
-			update_site_option( 'cets_theme_info_allow', $_POST['usage_flag'] );
-		?>
-			<div id="message" class="updated fade">
-				<p>
-					<?php _e( 'Settings saved.' ) ?>
-				</p>
-			</div>
-		<?php
+		// Get the time when the plugin list was last generated
+		$theme_stats_data = get_site_transient( 'theme_stats_data' );
+
+		if ( ! $theme_stats_data || ( isset( $_POST['action'] ) && $_POST['action'] === 'update' ) )  {
+			$theme_stats_data = $this->generate_theme_blog_list();
 		}
 
 		// get the usage setting
@@ -338,40 +336,24 @@ class WPMU_Theme_Usage_Info {
 			update_site_option( 'cets_theme_info_allow', 0 );
 		}
 
-		// Get the time when the theme list was last generated
-		$gen_time = get_site_option( 'cets_theme_info_data_freshness' );
-
-		if ( ( time() - $gen_time ) > 3600 ) {
-			// if older than an hour, regenerate, just to be safe
-			$this->generate_theme_blog_list();
-		}
-
 		$allowed_themes = WP_Theme::get_allowed_on_network();
 
 		// returns an array of Theme Objects
 		$themes = wp_get_themes();
-
-		$list = get_site_option( 'cets_theme_info_data' );
-		ksort( $list );
 		
 		// figure out what themes have not been used at all
 //		$unused_themes = array();
 //		foreach ( $themes as $theme ) {
-//			if ( !array_key_exists( $theme->stylesheet, $list ) ) {
-//				//if (!array_key_exists($theme['Name'], $list))
+//			if ( !array_key_exists( $theme->stylesheet, $theme_stats_data ) ) {
+//				//if (!array_key_exists($theme['Name'], $theme_stats_data))
 //				array_push($unused_themes, $theme);
 //
 //			}
 //		}
 		?>
 		<style type="text/css">
-			.bloglist {
-				display:none;
-			}
-			.plugins .active td.theme-title {
-				border-left: 4px solid #2EA2CC;
-				font-weight: 700;
-			}
+			.bloglist {	display:none; }
+			.plugins .active td.theme-title { border-left: 4px solid #2EA2CC; font-weight: 700; }
 		</style>
 		<div class="wrap">
 			<h2><?php _e( 'Theme Usage Information', 'wpmu-theme-usage-info' ); ?></h2>
@@ -459,7 +441,7 @@ class WPMU_Theme_Usage_Info {
 						<tbody id="themes">
 							<?php
 							$counter = 0;
-							foreach ( $list as $theme => $blogs ) {
+							foreach ( $theme_stats_data as $theme => $blogs ) {
 								$theme_object = wp_get_theme( $theme );
 								$counter = $counter + 1;
 								$thisTheme = $themes[ $theme ];
@@ -506,7 +488,7 @@ class WPMU_Theme_Usage_Info {
 											?>
 										</ul>
 									</td>
-							<?php } // END foreach ( $list as $theme => $blogs )
+							<?php } // END foreach ( $theme_stats_data as $theme => $blogs )
 							?>
 						</tbody>
 					</table>
