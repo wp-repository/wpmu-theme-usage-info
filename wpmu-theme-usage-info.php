@@ -48,50 +48,70 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
  * @since 1.0.0
  */
 class WPMU_Theme_Usage_Info {
-	
-	/**
-	 * Holds a copy of the object for easy reference.
-	 *
-	 * @since	1.0.0
-	 * @static
-	 * @access	private
-	 * @var		object	$instance
-	 */
-	private static $instance;
-	
+
 	/**
 	 * Current version of the plugin.
 	 *
-	 * @since	1.0.0
-	 * @access	public
-	 * @var		string	$version
+	 * @since 1.0.0
+	 *
+	 * @var string $version
 	 */
-	public $version = '2.0-beta';
-	
+	public $version = '2.0.0';
+
 	/**
-	 * Constructor. Hooks all interactions to initialize the class.
+	 * Constructor
 	 *
-	 * @todo	can the blog list generation moved out of init?
-	 *
-	 * @since	1.0.0
-	 * @access	public
-	 *
-	 * @see		add_action()
-	 * @see		add_filter()
-	 * @see		get_site_option()
-	 * @uses	generate_theme_blog_list()
-	 *
-	 * @return	void
+	 * @since  1.0.0
 	 */
-	function __construct() {
-		
-		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
-		add_action( 'switch_theme', array( &$this, 'switch_theme' ));	
+	public function __construct() {
+		/* Do nothing here */
+	} // END __construct()
+
+	/**
+	 * Hook in actions and filters
+	 *
+	 * @since 2.0.0
+	 */
+	private function setup_actions() {
+
+		/** Actions ***********************************************************/
+		add_action( 'switch_theme',       array( $this, 'switch_theme' ) );
+		add_action( 'plugins_loaded',     array( $this, 'load_plugin_textdomain' ) );
+		add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
 		add_action( 'load-themes_page_wpmu-theme-usage-info', array( $this, 'load_admin_assets' ) );
-		add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ));
-		
-		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
-		add_filter( 'theme_action_links', array( &$this, 'action_links' ), 9, 3);
+
+		/** Filters ***********************************************************/
+		add_filter( 'plugin_row_meta',    array( $this, 'plugin_row_meta' ), 10, 2 );
+		add_filter( 'theme_action_links', array( $this, 'action_links' ),    9,  3 );
+
+//		register_activation_hook( __FILE__, array( 'WPMU_Plugin_Stats', 'activation' ) );
+
+	} // END setup_actions()
+
+	/**
+	 * Getter method for retrieving the object instance.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return WPMU_Theme_Usage_Info|null The instance object
+	 */
+	public static function instance() {
+
+		// Store the instance locally to avoid private static replication
+		static $instance = null;
+
+		// Only run these methods if they haven't been ran previously
+		if ( null === $instance ) {
+			$instance = new WPMU_Theme_Usage_Info;
+			$instance->setup_actions();
+		}
+
+		// Always return the instance
+		return $instance;
+
+	} // END instance()
+
+	function OLD__construct() {
 
 		if ( in_array( basename( $_SERVER['PHP_SELF'] ), array( 'themes.php' ) ) )  {
 			// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
@@ -103,21 +123,6 @@ class WPMU_Theme_Usage_Info {
 		}
 		
 	} // END __construct()
-
-	/**
-	 * Getter method for retrieving the object instance.
-	 *
-	 * @since	1.0.0
-	 * @static
-	 * @access	public
-	 *
-	 * @return	object	WPMU_Theme_Usage_Info::$instance
-	 */
-	public static function get_instance() {
-
-		return self::$instance;
-
-	} // END get_instance()
 	
 	/**
 	 * Fetch sites and the active plugins every single site
@@ -625,9 +630,12 @@ class WPMU_Theme_Usage_Info {
 /**
  * Instantiate the main class
  *
- * @since	1.0.0
- * @access	public
+ * @since 2.0.0
  *
- * @var	object	$wpmu_theme_usage_info holds the instantiated class {@uses WPMU_Theme_Usage_Info}
+ * @var object $wpmu_theme_usage_info Holds the instantiated class {@uses WPMU_Theme_Usage_Info}
  */
-$wpmu_theme_usage_info = new WPMU_Theme_Usage_Info;
+function WPMU_Theme_Usage_Info() {
+	return WPMU_Theme_Usage_Info::instance();
+} // END WPMU_Theme_Usage_Info()
+
+WPMU_Theme_Usage_Info();
