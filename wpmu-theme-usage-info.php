@@ -127,14 +127,11 @@ class WPMU_Theme_Usage_Info {
 	/**
 	 * Fetch sites and the active plugins every single site
 	 *
-	 * @since	1.0.0
-	 * @access	private
+	 * @since 1.0.0
 	 *
-	 * @see		get_site_option()
-	 * @see		add_site_option()
-	 * @see		update_site_option( )
-	 *
-	 * @return	void
+	 * @see get_site_option()
+	 * @see add_site_option()
+	 * @see update_site_option( )
 	 */
 	private function maybe_update() {
 
@@ -156,20 +153,18 @@ class WPMU_Theme_Usage_Info {
 	/**
 	 * Fetch sites and the active themes for every single site
 	 *
-	 * @since	1.0.0
-	 * @access	private
+	 * @since 1.0.0
 	 *
-	 * @see		switch_to_blog()
-	 * @see		wp_get_theme()
-	 * @see		trailingslashit()
-	 * @see		get_bloginfo()
-	 * @see		restore_current_blog()
-	 * @see		update_site_option()
+	 * @see switch_to_blog()
+	 * @see wp_get_theme()
+	 * @see trailingslashit()
+	 * @see get_bloginfo()
+	 * @see restore_current_blog()
+	 * @see update_site_option()
 	 *
-	 * @global	object	$wpdb
-	 * @global	array	$current_site
-	 * @global	string	$wp_version
-	 * @return	void
+	 * @global object $wpdb
+	 * @global array $current_site
+	 * @global string $wp_version
 	 */
 	private function generate_theme_blog_list() {
 //		@TODO fetch all themes and list them with number of blogs even if count == 0
@@ -224,18 +219,17 @@ class WPMU_Theme_Usage_Info {
 	/**
 	 * Fetch sites and the active plugins for every single site
 	 *
-	 * @todo	does not work with THX38 !!
+	 * @todo does not work with THX38 !!
 	 *
-	 * @since	1.0.0
-	 * @access	public
+	 * @since 1.0.0
 	 *
-	 * @see		wp_get_theme()
-	 * @see		get_site_option()
-	 * @see		is_super_admin()
+	 * @see wp_get_theme()
+	 * @see get_site_option()
+	 * @see is_super_admin()
 	 *
-	 * @global	array	$actions
-	 * @global	string	$theme
-	 * @return	array	$actions
+	 * @global array $actions
+	 * @global string $theme
+	 * @return array $actions
 	 */
 	public function action_links( $actions, $theme ){
 
@@ -295,14 +289,9 @@ class WPMU_Theme_Usage_Info {
 	/**
 	 * Add the menu item
 	 *
-	 * @since	1.0.0
-	 * @access	public
+	 * @since 1.0.0
 	 *
-	 * @see		add_submenu_page()
-	 * @action	network_admin_menu
-	 * @hook	filter	wpmu_theme_usage_info_cap	Defaults 'manage_network'
-	 *
-	 * @return	void
+	 * @see add_submenu_page()
 	 */
 	public function network_admin_menu() {
 		
@@ -320,21 +309,9 @@ class WPMU_Theme_Usage_Info {
 	/**
 	 * Create a function to actually display stuff on plugin usage
 	 *
-	 * @since	1.0.0
-	 * @access	public
+	 * @since 1.0.0
 	 *
-	 * @see		update_site_option()
-	 * @see		get_site_option()
-	 * @see		WP_Theme::get_allowed_on_network()
-	 * @see		wp_get_themes()
-	 * @see		add_query_arg()
-	 * @see		network_admin_url(
-	 * @see		_e(
-	 * @see		checked(
-	 * @uses	maybe_update()
-	 *
-	 * @param	string	$active_tab	Defaults to ''
-	 * @return	void
+	 * @param string $active_tab Defaults to ''
 	 */
 	public function theme_info_page( $active_tab = '' ) {
 		
@@ -543,13 +520,10 @@ class WPMU_Theme_Usage_Info {
 	/**
 	 * Regenerate the statistics on every theme switch network-wide
 	 *
-	 * @since	1.0.0
-	 * @access	public
+	 * @since 1.0.0
 	 *
-	 * @uses	generate_plugin_blog_list()
-	 * @action	switch_theme
-	 *
-	 * @return	void
+	 * @uses generate_plugin_blog_list()
+	 * @action switch_theme
 	 */
 	public function switch_theme() {
 
@@ -560,15 +534,12 @@ class WPMU_Theme_Usage_Info {
 	/**
 	 * Load assets on the page
 	 *
-	 * @since	1.0.0
-	 * @access	public
+	 * @since 1.0.0
 	 *
-	 * @see		wp_enqueue_script()
-	 * @see		plugins_url()
-	 * @action	load-themes_page_wpmu-theme-usage-info
-	 * @hook	filter	wpmu_theme_usage_info_debug	Defaults to {@see WP_DEBUG}
-	 *
-	 * @return	void
+	 * @see wp_enqueue_script()
+	 * @see plugins_url()
+	 * @action load-themes_page_wpmu-theme-usage-info
+	 * @hook filter wpmu_theme_usage_info_debug	Defaults to {@see WP_DEBUG}
 	 */
 	public function load_admin_assets() {
 		
@@ -581,16 +552,13 @@ class WPMU_Theme_Usage_Info {
 	/**
 	 * Load the plugin's textdomain hooked to 'plugins_loaded'.
 	 *
-	 * @since	1.0.0
-	 * @access	public
+	 * @since 1.0.0
 	 *
-	 * @see		load_plugin_textdomain()
-	 * @see		plugin_basename()
-	 * @action	plugins_loaded
-	 *
-	 * @return	void
+	 * @see load_plugin_textdomain()
+	 * @see plugin_basename()
+	 * @action plugins_loaded
 	 */
-	function load_plugin_textdomain() {
+	public function load_plugin_textdomain() {
 		
 		load_plugin_textdomain(
 			'wpmu-theme-usage-info',
@@ -603,16 +571,15 @@ class WPMU_Theme_Usage_Info {
 	/**
 	 * Add link to the GitHub repo to the plugin listing
 	 *
-	 * @since	1.0.0
-	 * @access	public
+	 * @since 1.0.0
 	 *
-	 * @see		plugin_basename()
+	 * @see plugin_basename()
 	 *
-	 * @param	array	$links
-	 * @param	string	$file
-	 * @return	array	$links
+	 * @param  array $links
+	 * @param  string $file
+	 * @return array $links
 	 */
-	function plugin_row_meta( $links, $file ) {
+	public function plugin_row_meta( $links, $file ) {
 
 		if ( $file == plugin_basename( __FILE__ ) ) {
 			return array_merge(
