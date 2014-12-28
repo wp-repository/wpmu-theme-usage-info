@@ -75,17 +75,17 @@ class WPMU_Theme_Usage_Info {
 	private function setup_actions() {
 
 		/** Actions ***********************************************************/
-		add_action( 'admin_head-themes.php', array( $this, 'add_css'                ) );
-		add_action( 'switch_theme',          array( $this, 'switch_theme'           ) );
-		add_action( 'plugins_loaded',        array( $this, 'load_plugin_textdomain' ) );
-		add_action( 'load-themes-network',   array( $this, 'load'                   ) );
-		add_action( 'manage_themes_custom_column', array( $this, 'single_row' ), 10, 3 );
+		add_action( 'admin_head-themes.php',       array( $this, 'add_css'                )        );
+		add_action( 'switch_theme',                array( $this, 'switch_theme'           )        );
+		add_action( 'plugins_loaded',              array( $this, 'load_plugin_textdomain' )        );
+		add_action( 'load-themes-network',         array( $this, 'load'                   )        );
+		add_action( 'manage_themes_custom_column', array( $this, 'single_row'             ), 10, 3 );
 
 		/** Filters ***********************************************************/
-		add_filter( 'plugin_row_meta',    array( $this, 'plugin_row_meta' ), 10, 2 );
 		add_filter( 'manage_themes-network_columns', array( $this, 'add_columns' ) );
-		add_filter( 'wp_prepare_themes_for_js', array( $this, 'overlay' ) );
+		add_filter( 'wp_prepare_themes_for_js',      array( $this, 'overlay'     ) );
 
+		/** (De-)Activation ***************************************************/
 		register_activation_hook( __FILE__, array( 'WPMU_Theme_Usage_Info', 'activation' ) );
 
 	} // END setup_actions()
@@ -129,7 +129,7 @@ class WPMU_Theme_Usage_Info {
 		return $prepared_themes;
 	}
 
-	function load() {
+	public function load() {
 
 		$theme_stats_data = get_site_transient( 'theme_stats_data' );
 
@@ -164,7 +164,7 @@ class WPMU_Theme_Usage_Info {
 	 * @param string   $stylesheet  Directory name of the theme.
 	 * @param WP_Theme $theme       Current WP_Theme object.
 	 */
-	function single_row( $column_name, $stylesheet, $theme ) {
+	public function single_row( $column_name, $stylesheet, $theme ) {
 
 		$network_data = get_site_transient( 'theme_stats_data' );
 		$data         = isset( $network_data[ $stylesheet ] ) ? $network_data[ $stylesheet ] : 0;
@@ -318,30 +318,6 @@ class WPMU_Theme_Usage_Info {
 		);
 
 	} // END load_plugin_textdomain()
-
-	/**
-	 * Add link to the GitHub repo to the plugin listing
-	 *
-	 * @since 1.0.0
-	 *
-	 * @see plugin_basename()
-	 *
-	 * @param  array $links
-	 * @param  string $file
-	 * @return array $links
-	 */
-	public function plugin_row_meta( $links, $file ) {
-
-		if ( $file == plugin_basename( __FILE__ ) ) {
-			return array_merge(
-				$links,
-				array( '<a href="https://github.com/wp-repository/wpmu-theme-usage-info" target="_blank">GitHub</a>' )
-			);
-		}
-
-		return $links;
-
-	} // END plugin_row_meta()
 
 	/**
 	 * Pre-Activation checks
