@@ -75,14 +75,16 @@ class WPMU_Theme_Usage_Info {
 	private function setup_actions() {
 
 		/** Actions ***********************************************************/
-		add_action( 'switch_theme',       array( $this, 'switch_theme'           ) );
-		add_action( 'plugins_loaded',     array( $this, 'load_plugin_textdomain' ) );
-		add_action( 'network_admin_menu', array( $this, 'network_admin_menu'     ) );
-		add_action( 'load-themes_page_wpmu-theme-usage-info', array( $this, 'load_admin_assets' ) );
+		add_action( 'admin_head-themes.php', array( $this, 'add_css'                ) );
+		add_action( 'switch_theme',          array( $this, 'switch_theme'           ) );
+		add_action( 'plugins_loaded',        array( $this, 'load_plugin_textdomain' ) );
+		add_action( 'load-themes-network',   array( $this, 'load'                   ) );
+		add_action( 'manage_themes_custom_column', array( $this, 'single_row' ), 10, 3 );
 
 		/** Filters ***********************************************************/
 		add_filter( 'plugin_row_meta',    array( $this, 'plugin_row_meta' ), 10, 2 );
-		add_filter( 'theme_action_links', array( $this, 'action_links' ),     9, 3 );
+		add_filter( 'manage_themes-network_columns', array( $this, 'add_columns' ) );
+		add_filter( 'wp_prepare_themes_for_js', array( $this, 'overlay' ) );
 
 		register_activation_hook( __FILE__, array( 'WPMU_Theme_Usage_Info', 'activation' ) );
 
@@ -111,18 +113,71 @@ class WPMU_Theme_Usage_Info {
 
 	} // END instance()
 
-	function OLD__construct() {
+	public function overlay( $prepared_themes ) {
+		
+		$network_data = get_site_transient( 'theme_stats_data' );
+		
+		foreach ( $prepared_themes as $theme => $key ) {
 
-		if ( in_array( basename( $_SERVER['PHP_SELF'] ), array( 'themes.php' ) ) )  {
-			// run the function to generate the theme blog list (this runs whenever the theme page reloads, but only regenerates the list if it's more than an hour old or not set yet)
-			$gen_time = get_site_option( 'cets_theme_info_data_freshness' );
+			$data         = isset( $network_data[ $theme ] ) ? $network_data[ $theme ] : 0;
+			$active_count = isset( $network_data[ $theme ] ) ? sizeOf( $data ) : 0;
+			
+			$prepared_themes[ $theme ]['version'] .= ' | ' . sprintf( _n( 'Active on %d site', 'Active on %d sites', $active_count, 'wpmu-theme-usage-info' ) , $active_count );
 
-			if ( ( time() - $gen_time ) > 3600 || strlen( $gen_time ) == 0 ) {
-				$this->generate_theme_blog_list();
-			}
 		}
 
-	} // END __construct()
+		return $prepared_themes;
+	}
+
+	function load() {
+
+		$theme_stats_data = get_site_transient( 'theme_stats_data' );
+
+		if ( ! $theme_stats_data )  {
+			$theme_stats_data = $this->generate_theme_blog_list();
+		}
+
+	}
+
+	public function add_css() {
+		?>
+<style type="text/css">
+	.column-active p { width: 200px; }
+	.bloglist {	display:none; }
+</style>
+		<?php
+	}
+
+	public function add_columns( $columns ) {
+
+		$columns['active'] = __( 'Usage', 'wpmu-theme-usage-info' );
+
+		return $columns;
+	}
+
+	/**
+	 * Fires inside each custom column of the Multisite themes list table.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string   $column_name Name of the column.
+	 * @param string   $stylesheet  Directory name of the theme.
+	 * @param WP_Theme $theme       Current WP_Theme object.
+	 */
+	function single_row( $column_name, $stylesheet, $theme ) {
+
+		$network_data = get_site_transient( 'theme_stats_data' );
+		$data         = isset( $network_data[ $stylesheet ] ) ? $network_data[ $stylesheet ] : 0;
+		$active_count = isset( $network_data[ $stylesheet ] ) ? sizeOf( $data ) : 0;
+		
+		switch ( $column_name ) {
+			case 'active':
+				echo '<p>' . sprintf( _n( 'Active on %d site', 'Active on %d sites', $active_count, 'wpmu-theme-usage-info' ) , $active_count ) . '</p>';
+				$this->active_blogs_list( $data, $stylesheet );
+				break;
+		}
+
+	}
 
 	/**
 	 * Fetch sites and the active themes for every single site
@@ -195,268 +250,6 @@ class WPMU_Theme_Usage_Info {
 	} // END generate_theme_blog_list()
 
 	/**
-	 * Fetch sites and the active plugins for every single site
-	 *
-	 * @todo does not work with THX38 !!
-	 *
-	 * @since 1.0.0
-	 *
-	 * @see wp_get_theme()
-	 * @see get_site_option()
-	 * @see is_super_admin()
-	 *
-	 * @global array $actions
-	 * @global string $theme
-	 * @return array $actions
-	 */
-	public function action_links( $actions, $theme ){
-
-		if ( !is_object( $theme ) ) {
-			$theme = wp_get_theme( $theme );
-		}
-
-		// Get the toggle to see if users can view this information
-		$allow = get_site_option( 'cets_theme_info_allow' );
-
-		// if it's not the site admin and users aren't allowed to be in here, just get out.
-		if ( $allow != 1 || !is_super_admin() ) {
-			return $actions;
-		}
-
-		//get the list of blogs for this theme
-		$data = get_site_transient( 'theme_stats_data' );
-
-		if ( isset( $data[ $theme->stylesheet ] ) ) {
-			$blogs = $data[ $theme->stylesheet ];
-		} else {
-			$blogs = array();
-		}
-
-		// get the first param of the actions var and add some more stuff before it
-		//$start = $actions[0];
-		$name = str_replace( " ", "_", $theme['Name'] );
-
-		$text = '<span style="color: #999;">' . __( 'Used on', 'wpmu-theme-usage-info' ) . ' ';
-		if ( sizeOf( $blogs ) > 0) {
-			$text .= '<a href="#TB_inline?height=155&width=300&inlineId='. $name . '" class="thickbox" title="' . $theme['Name'] . '">';
-		}
-		$text .= sizeOf( $blogs ) . ' ' . __( 'site', 'wpmu-theme-usage-info' );
-		if ( sizeOf( $blogs ) != 1 ) {
-			$text .= 's';
-		}
-		if ( sizeOf( $blogs ) > 0 ) {
-			$text .= '</a>';
-			$text .= '<div id="' . $name . '" style="display: none"><div>';
-
-			// loop through the list of blogs and display their titles
-			$text .= '<h4>' . __( 'This theme is active on the following sites:', 'wpmu-theme-usage-info' ) . '<h4>' . ' <ul>';
-			foreach ( $blogs as $blog ){
-				$text .= '<li><a href="http://' . $blog['blogurl'] . '" target="new">' . $blog['name'] . '</a></li>';
-			}
-			$text .= '</li>';
-			$text .= '</div></div>';
-		}
-		$text .= '</span>';
-
-		array_push( $actions, $text );
-
-		return $actions;
-
-	} // END action_links()
-
-	/**
-	 * Add the menu item
-	 *
-	 * @since 1.0.0
-	 *
-	 * @see add_submenu_page()
-	 */
-	public function network_admin_menu() {
-
-		add_submenu_page(
-			'themes.php',
-			__( 'Theme Statistics', 'wpmu-theme-usage-info' ),
-			__( 'Statistics', 'wpmu-theme-usage-info' ),
-			apply_filters( 'wpmu_theme_usage_info_cap', 'manage_network' ),
-			'wpmu-theme-usage-info',
-			array( $this, 'theme_info_page' )
-		);
-
-	} // END network_admin_menu()
-
-	/**
-	 * Create a function to actually display stuff on plugin usage
-	 *
-	 * @todo use WP_List_Table
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string Complete HTML render of the page
-	 */
-	public function theme_info_page() {
-
-		// Get the time when the plugin list was last generated
-		$theme_stats_data = get_site_transient( 'theme_stats_data' );
-
-		if ( ! $theme_stats_data || ( isset( $_POST['action'] ) && $_POST['action'] === 'update' ) )  {
-			$theme_stats_data = $this->generate_theme_blog_list();
-		}
-
-		// get the usage setting
-		$usage_flag = get_site_option( 'cets_theme_info_allow' );
-
-		// if it's not set, set it to zero (the default)
-		if ( strlen( $usage_flag ) == 0 ) {
-			$usage_flag = 0;
-			update_site_option( 'cets_theme_info_allow', 0 );
-		}
-
-		
-
-		// figure out what themes have not been used at all
-//		$unused_themes = array();
-//		foreach ( $themes as $theme ) {
-//			if ( !array_key_exists( $theme->stylesheet, $theme_stats_data ) ) {
-//				//if (!array_key_exists($theme['Name'], $theme_stats_data))
-//				array_push($unused_themes, $theme);
-//
-//			}
-//		}
-		?>
-		<style type="text/css">
-			table#wpmu-active-themes { margin-top: 6px; }
-			.bloglist {	display:none; }
-			.plugins .active td.theme-title { border-left: 4px solid #2EA2CC; font-weight: 700; }
-		</style>
-		<div class="wrap">
-			<h2><?php _e( 'Theme Statistics', 'wpmu-theme-usage-info' ); ?></h2>
-			<table class="wp-list-table widefat plugins" id="wpmu-active-themes">
-				<thead>
-					<tr>
-						<th class="nocase">
-							<?php _e( 'Themes', 'wpmu-theme-usage-info' ); ?>
-						</th>
-						<th class="case" style="text-align: center !important;">
-							<?php _e( 'Activated Sitewide', 'wpmu-theme-usage-info' ); ?>
-						</th>
-						<th class="num">
-							<?php _e( 'Total Sites', 'wpmu-theme-usage-info' ); ?>
-						</th>
-						<th width="200px">
-							<?php _e( 'Site Titles', 'wpmu-theme-usage-info' ); ?>
-						</th>
-					</tr>
-				</thead>
-				<tfoot>
-					<tr>
-						<th class="nocase">
-							<?php _e( 'Themes', 'wpmu-theme-usage-info' ); ?>
-						</th>
-						<th class="case" style="text-align: center !important;">
-							<?php _e( 'Activated Sitewide', 'wpmu-theme-usage-info' ); ?>
-						</th>
-						<th class="num">
-							<?php _e( 'Total Sites', 'wpmu-theme-usage-info' ); ?>
-						</th>
-						<th width="200px">
-							<?php _e( 'Site Titles', 'wpmu-theme-usage-info' ); ?>
-						</th>
-					</tr>
-				</tfoot>
-				<tbody id="themes">
-					<?php $this->data_table( $theme_stats_data ); ?>
-				</tbody>
-			</table>
-			<div class="tablenav bottom">
-				<div class="alignleft actions bulkactions">
-					<form name="regen" action="" method="post">
-						<?php submit_button( __( 'Regenerate', 'wpmu-plugin-stats' ), 'primary', 'submit', false ); ?>
-						<input type="hidden" name="action" value="update" />
-					</form>
-				</div>
-			</div>
-			<br />
-			<hr />
-			<h3><?php _e( 'Manage User Access', 'wpmu-theme-usage-info' ); ?></h3>
-			<p><?php _e( 'Users can see usage information for themes in Appearance -> Themes. You can control user access to that information via this toggle.', 'wpmu-theme-usage-info' ); ?></p>
-			<form name="themeinfoform" action="" method="post">
-				<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e( 'Let Users View Theme Usage Information:', 'wpmu-theme-usage-info' ); ?> </th>
-							<td>
-								<label>
-									<input type="radio" name="usage_flag" value="1" <?php checked( '1', $usage_flag ) ?> />
-									<?php _e( 'Yes' ); ?>
-								</label>
-								<br/>
-								<label>
-									<input type="radio" name="usage_flag" value="0" <?php checked( '0', $usage_flag ) ?> />
-									<?php _e( 'No' ); ?>
-								</label>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<input type="hidden" name="action" value="update" />
-				<?php submit_button(); ?>
-			</form>
-		</div><!-- .wrap -->
-	<?php
-	} // END theme_info_page()
-
-	/**
-	 * Generate the theme table body
-	 * 
-	 * @todo use WP_List_Table
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param  array $theme_stats_data
-	 * @return string
-	 */
-	private function data_table( $theme_stats_data ) {
-
-		$themes         = wp_get_themes();
-		$allowed_themes = WP_Theme::get_allowed_on_network();
-		$counter        = 0;
-
-		foreach ( $theme_stats_data as $theme => $info ) {
-			$counter               = $counter + 1;
-			$theme_object          = wp_get_theme( $theme );
-			$thisTheme             = $themes[ $theme ];
-			$active_count          = isset( $info ) ? sizeOf( $info ) : 0;
-			$is_allowed_on_network = ( array_key_exists( $thisTheme['Stylesheet'], $allowed_themes ) ) ? true : false;
-			?>
-			<tr valign="top" class="<?php echo $is_allowed_on_network ? 'active' : 'inactive'; ?>">
-				<td class="theme-title">
-					<?php echo $theme_object->name; ?>
-				</td>
-				<td align="center">
-					<?php
-					// get the array for this theme
-					if ( isset( $thisTheme ) ) {
-						$is_allowed_on_network ? _e( 'Yes' ) : _e( 'No' );
-					} else {
-						_e( 'Theme Files Not Found!', 'wpmu-theme-usage-info' );
-					}
-					?>
-				</td>
-				<td align="center">
-					<?php echo esc_html( $active_count ); ?>
-				</td>
-				<td width="200px">
-					<a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo esc_attr( $counter ); ?>').toggle(400);">
-						<?php _e( 'Show/Hide Blogs', 'wpmu-plugin-stats' ); ?>
-					</a>
-					<ul class="bloglist" id="bloglist_<?php echo esc_attr( $counter ); ?>">
-						<?php $this->active_blogs_list( $info ); ?>
-					</ul>
-				</td>
-		<?php } // END foreach ( $theme_stats_data as $theme => $info )
-	} // END data_table()
-
-	/**
 	 * List all sites the theme is active on
 	 *
 	 * @since 2.0.0
@@ -464,7 +257,7 @@ class WPMU_Theme_Usage_Info {
 	 * @param  array $info
 	 * @return string
 	 */
-	private function active_blogs_list( $info ) {
+	function active_blogs_list( $info, $id ) {
 
 //		foreach ( $info as $key => $row ) {
 //			$name[ $key ]    = $row['name'];
@@ -473,19 +266,24 @@ class WPMU_Theme_Usage_Info {
 //		if ( sizeOf( $name ) == sizeOf( $info ) ) {
 //			array_multisort( $name, SORT_ASC, $info );
 //		}
+		?>
+		<a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo esc_attr( $id ); ?>').toggle(400);">
+			<?php _e( 'Show/Hide Blogs', 'wpmu-plugin-stats' ); ?>
+		</a>
+		<ul class="bloglist" id="bloglist_<?php echo esc_attr( $id ); ?>">
+			<?php
+			if ( isset( $info ) && is_array( $info ) ) {
 
-
-		if ( isset( $info ) && is_array( $info ) ) {
-
-			foreach ( $info as $blog ) {
-				$link_title = empty( $blog['name'] ) ? $blog['url'] : $blog['name'];
-				echo '<li><a href="http://' . $blog['blogurl'] . '" target="new">' . $link_title . '</a></li>';
+				foreach ( $info as $blog ) {
+					$link_title = empty( $blog['name'] ) ? $blog['url'] : $blog['name'];
+					echo '<li><a href="http://' . $blog['blogurl'] . '" target="new">' . $link_title . '</a></li>';
+				}
+			} else {
+				echo '<li>' . esc_html__( 'N/A', 'wpmu-plugin-stats' ) . '</li>';
 			}
-
-		} else {
-			echo '<li>' . esc_html__( 'N/A', 'wpmu-plugin-stats' ) . '</li>';
-		}
-
+			?>
+		</ul>
+		<?php
 	} // END active_blogs_list()
 
 	/**
@@ -501,24 +299,6 @@ class WPMU_Theme_Usage_Info {
 		$this->generate_theme_blog_list();
 
 	} // END switch_theme()
-
-	/**
-	 * Load assets on the page
-	 *
-	 * @since 1.0.0
-	 *
-	 * @see wp_enqueue_script()
-	 * @see plugins_url()
-	 * @action load-themes_page_wpmu-theme-usage-info
-	 * @hook filter wpmu_theme_usage_info_debug	Defaults to {@see WP_DEBUG}
-	 */
-	public function load_admin_assets() {
-
-		$dev = apply_filters( 'wpmu_theme_usage_info_debug', WP_DEBUG ) ? '' : '.min';
-
-		wp_enqueue_script( 'tablesort', plugins_url( 'assets/js/tablesort' . $dev . '.js', __FILE__ ), array(), '2.5', true );
-
-	} // END load_admin_assets()
 
 	/**
 	 * Load the plugin's textdomain hooked to 'plugins_loaded'.
