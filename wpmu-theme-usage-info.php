@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    Christian Foellmann & Jason Lemahieu and Kevin Graeme (Cooperative Extension Technology Services)
- * @copyright Copyright (c) 2009 - 2014, Cooperative Extension Technology Services
+ * @copyright Copyright (c) 2014 - 2015 Christian Foellmann (http://christian.foellmann.de)
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GPLv2
  * @package   WP-Repository\WPMU_Theme_Usage_Info
  * @version   2.0.0
@@ -20,7 +20,7 @@ Network: true
 
 	WPMU Theme Usage Info
 
-	Copyright (C) 2014 Christian Foellmann (http://christian.foellmann.de)
+	Copyright (C) 2014 - 2015 Christian Foellmann (http://christian.foellmann.de)
 	Copyright (C) 2009 - 2013 Board of Regents of the University of Wisconsin System
 	Cooperative Extension Technology Services
 	University of Wisconsin-Extension
@@ -75,15 +75,15 @@ class WPMU_Theme_Usage_Info {
 	private function setup_actions() {
 
 		/** Actions ***********************************************************/
+		add_action( 'plugins_loaded',              array( $this, 'load_plugin_textdomain' )        );
 		add_action( 'admin_head-themes.php',       array( $this, 'add_css'                )        );
 		add_action( 'switch_theme',                array( $this, 'switch_theme'           )        );
-		add_action( 'plugins_loaded',              array( $this, 'load_plugin_textdomain' )        );
-		add_action( 'load-themes-network',         array( $this, 'load'                   )        );
-		add_action( 'manage_themes_custom_column', array( $this, 'single_row'             ), 10, 3 );
+		add_action( 'load-themes.php',             array( $this, 'load'                   )        );
+		add_action( 'manage_themes_custom_column', array( $this, 'column_active'          ), 10, 3 );
 
 		/** Filters ***********************************************************/
-		add_filter( 'manage_themes-network_columns', array( $this, 'add_columns' ) );
-		add_filter( 'wp_prepare_themes_for_js',      array( $this, 'overlay'     ) );
+		add_filter( 'manage_themes-network_columns', array( $this, 'add_column'     ) );
+		add_filter( 'wp_prepare_themes_for_js',      array( $this, 'extend_overlay' ) );
 
 		/** (De-)Activation ***************************************************/
 		register_activation_hook( __FILE__, array( 'WPMU_Theme_Usage_Info', 'activation' ) );
@@ -113,7 +113,7 @@ class WPMU_Theme_Usage_Info {
 
 	} // END instance()
 
-	public function overlay( $prepared_themes ) {
+	public function extend_overlay( $prepared_themes ) {
 		
 		$network_data = get_site_transient( 'theme_stats_data' );
 		
@@ -127,7 +127,8 @@ class WPMU_Theme_Usage_Info {
 		}
 
 		return $prepared_themes;
-	}
+
+	} // END extend_overlay()
 
 	public function load() {
 
@@ -137,7 +138,7 @@ class WPMU_Theme_Usage_Info {
 			$theme_stats_data = $this->generate_theme_blog_list();
 		}
 
-	}
+	} // END load()
 
 	public function add_css() {
 		?>
@@ -146,14 +147,15 @@ class WPMU_Theme_Usage_Info {
 	.bloglist {	display:none; }
 </style>
 		<?php
-	}
+	} // END add_css()
 
-	public function add_columns( $columns ) {
+	public function add_column( $columns ) {
 
 		$columns['active'] = __( 'Usage', 'wpmu-theme-usage-info' );
 
 		return $columns;
-	}
+
+	} // END add_column()
 
 	/**
 	 * Fires inside each custom column of the Multisite themes list table.
@@ -164,20 +166,42 @@ class WPMU_Theme_Usage_Info {
 	 * @param string   $stylesheet  Directory name of the theme.
 	 * @param WP_Theme $theme       Current WP_Theme object.
 	 */
-	public function single_row( $column_name, $stylesheet, $theme ) {
+	public function column_active( $column_name, $stylesheet, $theme ) {
 
-		$network_data = get_site_transient( 'theme_stats_data' );
-		$data         = isset( $network_data[ $stylesheet ] ) ? $network_data[ $stylesheet ] : 0;
-		$active_count = isset( $network_data[ $stylesheet ] ) ? sizeOf( $data ) : 0;
-		
-		switch ( $column_name ) {
-			case 'active':
-				echo '<p>' . sprintf( _n( 'Active on %d site', 'Active on %d sites', $active_count, 'wpmu-theme-usage-info' ) , $active_count ) . '</p>';
-				$this->active_blogs_list( $data, $stylesheet );
-				break;
-		}
+		if ( 'active' === $column_name ) {
 
-	}
+			$network_data = get_site_transient( 'theme_stats_data' );
+
+//			$id           = isset( $plugin_data['id'] ) ? $plugin_data['id'] : rand( 999999, 9999999 );
+			$data         = isset( $network_data[ $stylesheet ] ) ? $network_data[ $stylesheet ] : 0;
+			$active_count = isset( $network_data[ $stylesheet ] ) ? sizeOf( $data )              : 0;
+
+			echo '<p>';
+			if ( 0 === $active_count ) {
+				_e( 'Not Active on any site', 'wpmu-plugin-stats' );
+			} else {
+				printf(
+					_n( 'Active on %2$s %1$d site %3$s', 'Active on %2$s %1$d sites %3$s', $active_count, 'wpmu-theme-usage-info' ),
+					$active_count,
+					"<a href=\"javascript:;\" onClick=\"jQuery('#bloglist_{$theme->stylesheet}').toggle(400);\">",
+					'</a>'
+				);
+			}
+			echo '</p>';
+
+			echo "<ul class=\"bloglist\" id=\"bloglist_{$theme->stylesheet}\">";
+			if ( isset( $network_data[ $theme->stylesheet ] ) && is_array( $network_data[ $theme->stylesheet ] ) ) {
+
+				foreach ( $network_data[ $theme->stylesheet ] as $theme_data ) {
+					$link_title = empty( $theme_data['name'] ) ? $theme_data['siteurl'] : $theme_data['name'];
+					echo '<li><a href="http://' . $theme_data['siteurl'] . '" target="new">' . $link_title . '</a></li>';
+				}
+			}
+			echo '</ul>';
+
+		} // END if 'active' column
+
+	} // END column_active()
 
 	/**
 	 * Fetch sites and the active themes for every single site
@@ -202,38 +226,38 @@ class WPMU_Theme_Usage_Info {
 		global $wpdb, $current_site;
 
 		$select     = $wpdb->prepare( "SELECT blog_id, domain, path FROM $wpdb->blogs WHERE site_id = %d ORDER BY domain ASC", $current_site->id );
-		$blogs      = $wpdb->get_results( $select );
-		$blogthemes = array();
+		$sites      = $wpdb->get_results( $select );
+		$sitethemes = array();
 		$processedthemes = array();
 
-		if ( $blogs ) {
-			foreach ( $blogs as $blog ) {
-				switch_to_blog( $blog->blog_id );
+		if ( $sites ) {
+			foreach ( $sites as $site ) {
+				switch_to_blog( $site->blog_id );
 				$cto = wp_get_theme();
 				$ct  = $cto->stylesheet;
 
 				if ( constant( 'VHOST' ) == 'yes' ) {
-					$blogurl = $blog->domain;
+					$siteurl = $site->domain;
 				} else {
-					$blogurl = trailingslashit( $blog->domain . $blog->path );
+					$siteurl = trailingslashit( $site->domain . $site->path );
 				}
 
 				if ( array_key_exists( $ct, $processedthemes ) == false ) {
-					$blogthemes[ $ct ][0] = array(
-						'blogid' => $blog->blog_id,
+					$sitethemes[ $ct ][0] = array(
+						'siteid' => $site->blog_id,
 						/*'path' => $path, 'domain' => $domain,*/
 						'name' => get_bloginfo( 'name' ),
-						'blogurl' => $blogurl,
+						'siteurl' => $siteurl,
 					);
 					$processedthemes[ $ct ] = true;
 				} else {
 					//get the size of the current array of blogs
-					$count = sizeof( $blogthemes[ $ct ] );
-					$blogthemes["$ct"][ $count ] = array(
-						'blogid' => $blog->blog_id,
+					$count = sizeof( $sitethemes[ $ct ] );
+					$sitethemes["$ct"][ $count ] = array(
+						'siteid' => $site->blog_id,
 						/* 'path' => $path, 'domain' => $domain,*/
 						'name' => get_bloginfo( 'name' ),
-						'blogurl' => $blogurl,
+						'siteurl' => $siteurl,
 					);
 				}
 
@@ -242,49 +266,16 @@ class WPMU_Theme_Usage_Info {
 			}
 		}
 
-		ksort( $blogthemes );
-		set_site_transient( 'theme_stats_data', $blogthemes, 24 * HOUR_IN_SECONDS );
+		ksort( $sitethemes );
 
-		return $blogthemes;
+		$hours   = wp_is_large_network() ? 24 : 2;
+		$refresh = apply_filters( 'wpmu_theme_stats_refresh' , $hours * HOUR_IN_SECONDS );
+
+		set_site_transient( 'theme_stats_data', $sitethemes, $refresh );
+
+		return $sitethemes;
 
 	} // END generate_theme_blog_list()
-
-	/**
-	 * List all sites the theme is active on
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param  array $info
-	 * @return string
-	 */
-	function active_blogs_list( $info, $id ) {
-
-//		foreach ( $info as $key => $row ) {
-//			$name[ $key ]    = $row['name'];
-//			$blogurl[ $key ] = $row['blogurl'];
-//		}
-//		if ( sizeOf( $name ) == sizeOf( $info ) ) {
-//			array_multisort( $name, SORT_ASC, $info );
-//		}
-		?>
-		<a href="javascript:void(0)" onClick="jQuery('#bloglist_<?php echo esc_attr( $id ); ?>').toggle(400);">
-			<?php _e( 'Show/Hide Blogs', 'wpmu-plugin-stats' ); ?>
-		</a>
-		<ul class="bloglist" id="bloglist_<?php echo esc_attr( $id ); ?>">
-			<?php
-			if ( isset( $info ) && is_array( $info ) ) {
-
-				foreach ( $info as $blog ) {
-					$link_title = empty( $blog['name'] ) ? $blog['url'] : $blog['name'];
-					echo '<li><a href="http://' . $blog['blogurl'] . '" target="new">' . $link_title . '</a></li>';
-				}
-			} else {
-				echo '<li>' . esc_html__( 'N/A', 'wpmu-plugin-stats' ) . '</li>';
-			}
-			?>
-		</ul>
-		<?php
-	} // END active_blogs_list()
 
 	/**
 	 * Regenerate the statistics on every theme switch network-wide
