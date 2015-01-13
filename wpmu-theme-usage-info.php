@@ -144,7 +144,7 @@ class WPMU_Theme_Usage_Info {
 		?>
 <style type="text/css">
 	.column-active p { width: 200px; }
-	.bloglist {	display:none; }
+	.siteslist { display:none; }
 </style>
 		<?php
 	} // END add_css()
@@ -183,13 +183,13 @@ class WPMU_Theme_Usage_Info {
 				printf(
 					_n( 'Active on %2$s %1$d site %3$s', 'Active on %2$s %1$d sites %3$s', $active_count, 'wpmu-theme-usage-info' ),
 					$active_count,
-					"<a href=\"javascript:;\" onClick=\"jQuery('#bloglist_{$theme->stylesheet}').toggle(400);\">",
+					"<a href=\"javascript:;\" onClick=\"jQuery('#siteslist_{$theme->stylesheet}').toggle(400);\">",
 					'</a>'
 				);
 			}
 			echo '</p>';
 
-			echo "<ul class=\"bloglist\" id=\"bloglist_{$theme->stylesheet}\">";
+			echo "<ul class=\"siteslist\" id=\"siteslist_{$theme->stylesheet}\">";
 			if ( isset( $network_data[ $theme->stylesheet ] ) && is_array( $network_data[ $theme->stylesheet ] ) ) {
 
 				foreach ( $network_data[ $theme->stylesheet ] as $theme_data ) {
@@ -230,41 +230,40 @@ class WPMU_Theme_Usage_Info {
 		$sitethemes = array();
 		$processedthemes = array();
 
-		if ( $sites ) {
-			foreach ( $sites as $site ) {
-				switch_to_blog( $site->blog_id );
-				$cto = wp_get_theme();
-				$ct  = $cto->stylesheet;
+		foreach ( $sites as $site ) {
+			switch_to_blog( $site->blog_id );
+			$cto = wp_get_theme();
+			$ct  = $cto->stylesheet;
 
-				if ( constant( 'VHOST' ) == 'yes' ) {
-					$siteurl = $site->domain;
-				} else {
-					$siteurl = trailingslashit( $site->domain . $site->path );
-				}
+			if ( constant('VHOST') == 'yes' ) {
+				$siteurl = $site->domain;
+			} else {
+				$siteurl = trailingslashit( $site->domain . $site->path );
+			}
 
-				if ( array_key_exists( $ct, $processedthemes ) == false ) {
-					$sitethemes[ $ct ][0] = array(
-						'siteid' => $site->blog_id,
-						/*'path' => $path, 'domain' => $domain,*/
-						'name' => get_bloginfo( 'name' ),
-						'siteurl' => $siteurl,
-					);
-					$processedthemes[ $ct ] = true;
-				} else {
-					//get the size of the current array of blogs
-					$count = sizeof( $sitethemes[ $ct ] );
-					$sitethemes["$ct"][ $count ] = array(
-						'siteid' => $site->blog_id,
-						/* 'path' => $path, 'domain' => $domain,*/
-						'name' => get_bloginfo( 'name' ),
-						'siteurl' => $siteurl,
-					);
-				}
-
-				restore_current_blog();
+			if ( array_key_exists( $ct, $processedthemes ) == false ) {
+				$sitethemes[ $ct ][0] = array(
+					'siteid' => $site->blog_id,
+					/*'path' => $path, 'domain' => $domain,*/
+					'name' => get_bloginfo('name'),
+					'siteurl' => $siteurl,
+				);
+				$processedthemes[ $ct ] = true;
+			} else {
+				//get the size of the current array of blogs
+				$count = sizeof( $sitethemes[ $ct ] );
+				$sitethemes["$ct"][ $count ] = array(
+					'siteid' => $site->blog_id,
+					/* 'path' => $path, 'domain' => $domain,*/
+					'name' => get_bloginfo('name'),
+					'siteurl' => $siteurl,
+				);
 
 			}
-		}
+
+			restore_current_blog();
+
+		} // END foreach 'sites'
 
 		ksort( $sitethemes );
 
@@ -286,8 +285,12 @@ class WPMU_Theme_Usage_Info {
 	 * @action switch_theme
 	 */
 	public function switch_theme() {
-
-		$this->generate_theme_blog_list();
+		
+		if ( wp_is_large_network() ) {
+			$this->load();
+		} else {
+			$this->generate_theme_blog_list();
+		}
 
 	} // END switch_theme()
 
