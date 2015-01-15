@@ -1,127 +1,54 @@
-# Copyright (C) 2013 
-# This file is distributed under the same license as the  package.
+# Copyright (C) 2015 Christian Foellmann & Jason Lemahieu
+# This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version:  \n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/wp\n"
-"POT-Creation-Date: 2013-03-14 15:59:09+00:00\n"
+"Project-Id-Version: WPMU Theme Usage Info 2.0.0\n"
+"Report-Msgid-Bugs-To: "
+"https://github.com/wp-repository/wpmu-theme-usage-info/issues\n"
+"POT-Creation-Date: 2015-01-15 19:19:52+00:00\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2013-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Christian Foellmann <foellmann@foe-services.de>\n"
+"Language-Team: Christian Foellmann <foellmann@foe-services.de>\n"
+"X-Generator: grunt-wp-i18n 0.4.9\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: United States\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: "
+"__;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_"
+"x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes\n"
 
-#: cets_theme_info.php:6
-msgid "WordPress plugin for letting network admins easily see what themes are actively used on the network"
+#: wpmu-theme-usage-info.php:157
+msgid "Usage"
 msgstr ""
 
-#: cets_theme_info.php:144
-msgid "Used on"
+#: wpmu-theme-usage-info.php:182
+msgid "Not Active on any site"
 msgstr ""
 
-#: cets_theme_info.php:146
-msgid "Sites that use this theme"
-msgstr ""
+#: wpmu-theme-usage-info.php:185 wpmu-theme-usage-info.php:296
+msgid "Active on %2$s %1$d site %3$s"
+msgid_plural "Active on %2$s %1$d sites %3$s"
+msgstr[0] ""
+msgstr[1] ""
 
-#: cets_theme_info.php:148
-msgid "site"
-msgstr ""
-
-#: cets_theme_info.php:158
-msgid "Activated on the following sites:"
-msgstr ""
-
-#: cets_theme_info.php:175
-msgid "Theme Usage Info"
-msgstr ""
-
-#: cets_theme_info.php:184
-msgid "About"
-msgstr ""
-
-#: cets_theme_info.php:197
-msgid "Development"
-msgstr ""
-
-#: cets_theme_info.php:206
-msgid "Requires at least: %s"
-msgstr ""
-
-#: cets_theme_info.php:207
-msgid "Tested up to: %s"
-msgstr ""
-
-#: cets_theme_info.php:210
-msgid "Languages"
-msgstr ""
-
-#: cets_theme_info.php:212
-msgid "Help to translate at %s"
-msgstr ""
-
-#: cets_theme_info.php:214
-msgid "License"
-msgstr ""
-
-#: cets_theme_info.php:226
+#: wpmu-theme-usage-info.php:334
 msgid ""
-"Theme Usage Information %s This plugin requires at least WordPress version "
-"3.4 - Please upgrade to stay safe and secure."
+"This plugin only runs on multisite installations. The functionality makes "
+"no sense for WP single sites."
 msgstr ""
 
-#: cets_theme_info.php:298
-msgid "Theme Usage Information"
+#. Plugin URI of the plugin/theme
+msgid "https://wordpress.org/plugins/wpmu-theme-usage-info/"
 msgstr ""
 
-#: cets_theme_info.php:311
-msgid "Themes"
-msgstr ""
-
-#: cets_theme_info.php:312
-msgid "Settings"
-msgstr ""
-
-#: cets_theme_info.php:317
-msgid "Manage User Access"
-msgstr ""
-
-#: cets_theme_info.php:318
-msgid ""
-"Users can see usage information for themes in Appearance -> Themes. You can "
-"control user access to that information via this toggle."
-msgstr ""
-
-#: cets_theme_info.php:323
-msgid "Let Users View Theme Usage Information:"
-msgstr ""
-
-#: cets_theme_info.php:344 cets_theme_info.php:392
-msgid "Used Themes"
-msgstr ""
-
-#: cets_theme_info.php:345 cets_theme_info.php:393 cets_theme_info.php:404
-#: cets_theme_info.php:427
-msgid "Activated Sitewide"
-msgstr ""
-
-#: cets_theme_info.php:346 cets_theme_info.php:394 cets_theme_info.php:405
-#: cets_theme_info.php:428
-msgid "Total Sites"
-msgstr ""
-
-#: cets_theme_info.php:347 cets_theme_info.php:395
-msgid "Site Titles"
-msgstr ""
-
-#: cets_theme_info.php:368
-msgid "Theme Files Not Found!"
-msgstr ""
-
-#: cets_theme_info.php:372
-msgid "Show/Hide Sites"
-msgstr ""
-
-#: cets_theme_info.php:403 cets_theme_info.php:426
-msgid "Unused Themes"
+#. Description of the plugin/theme
+msgid "Provides info to network admins and users on the popularity of themes"
 msgstr ""
