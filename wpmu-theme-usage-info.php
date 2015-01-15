@@ -77,7 +77,7 @@ class WPMU_Theme_Usage_Info {
 		/** Actions ***********************************************************/
 		add_action( 'plugins_loaded',              array( $this, 'load_plugin_textdomain' )        );
 		add_action( 'admin_head-themes.php',       array( $this, 'add_css'                )        );
-		add_action( 'switch_theme',                array( $this, 'switch_theme'           )        );
+		add_action( 'switch_theme',                array( $this, 'auto_refresh'           )        );
 		add_action( 'load-themes.php',             array( $this, 'load'                   )        );
 		add_action( 'manage_themes_custom_column', array( $this, 'column_active'          ), 10, 3 );
 
@@ -134,7 +134,7 @@ class WPMU_Theme_Usage_Info {
 
 		$theme_stats_data = get_site_transient( 'theme_stats_data' );
 
-		if ( ! $theme_stats_data )  {
+		if ( ! $theme_stats_data || isset( $_GET['manual-stats-refresh'] ) )  {
 			$theme_stats_data = $this->generate_theme_blog_list();
 		}
 
@@ -171,8 +171,6 @@ class WPMU_Theme_Usage_Info {
 		if ( 'active' === $column_name ) {
 
 			$network_data = get_site_transient( 'theme_stats_data' );
-
-//			$id           = isset( $plugin_data['id'] ) ? $plugin_data['id'] : rand( 999999, 9999999 );
 			$data         = isset( $network_data[ $stylesheet ] ) ? $network_data[ $stylesheet ] : 0;
 			$active_count = isset( $network_data[ $stylesheet ] ) ? sizeOf( $data )              : 0;
 
@@ -189,15 +187,14 @@ class WPMU_Theme_Usage_Info {
 			}
 			echo '</p>';
 
-			echo "<ul class=\"siteslist\" id=\"siteslist_{$theme->stylesheet}\">";
 			if ( isset( $network_data[ $theme->stylesheet ] ) && is_array( $network_data[ $theme->stylesheet ] ) ) {
-
+				echo "<ul class=\"siteslist\" id=\"siteslist_{$theme->stylesheet}\">";
 				foreach ( $network_data[ $theme->stylesheet ] as $theme_data ) {
 					$link_title = empty( $theme_data['name'] ) ? $theme_data['siteurl'] : $theme_data['name'];
 					echo '<li><a href="http://' . $theme_data['siteurl'] . '" target="new">' . $link_title . '</a></li>';
 				}
+				echo '</ul>';
 			}
-			echo '</ul>';
 
 		} // END if 'active' column
 
@@ -262,7 +259,6 @@ class WPMU_Theme_Usage_Info {
 			}
 
 			restore_current_blog();
-
 		} // END foreach 'sites'
 
 		ksort( $sitethemes );
@@ -284,7 +280,7 @@ class WPMU_Theme_Usage_Info {
 	 * @uses generate_plugin_blog_list()
 	 * @action switch_theme
 	 */
-	public function switch_theme() {
+	public function auto_refresh() {
 		
 		if ( wp_is_large_network() ) {
 			$this->load();
@@ -292,7 +288,7 @@ class WPMU_Theme_Usage_Info {
 			$this->generate_theme_blog_list();
 		}
 
-	} // END switch_theme()
+	} // END auto_refresh()
 
 	/**
 	 * Load the plugin's textdomain hooked to 'plugins_loaded'.
