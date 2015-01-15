@@ -1,23 +1,22 @@
 === WPMU Theme Usage Info ===
-Contributors: DeannaS, kgraeme, MadtownLems, wp-repository
-Tags: Wordpress Multiuser, Themes, MU, WPMU, multisite, network
-Requires at least: 3.4
-Tested up to: 3.9-alpha
-Stable tag: 2.0-beta
+Contributors: cfoellmann, MadtownLems
+Tags: Wordpress Multiuser, Themes, MU, WPMU, multisite, network, themes
+Requires at least: 3.8
+Tested up to: 4.1
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Provides info to network admins and users on the popularity of themes. 
+Gives network admins an easy way to see what themes are actively used on the sites of a multisite installation
 
 == Description ==
 
-WordPress Multisite has two ways to activate themes either sitewide, or on a blog-by-blog basis. But, there's no convenient way built-in to know which themes are actually being used, or by whom. This plugin addresses that issue by creating a "Theme Usage Info" sub-menu of the Network Admin theme menu. Included on the page are two tables of data - one of themes currently being used, and one of themes not currently being used. The currently used themes table provides information on how many blogs are using the theme, which blogs are using it, and whether or not the theme is currently activated site-wide. The table of unused themes provides information on whether the theme is currently activated sitewide.
+This plugin displays the count and the individual sites for each installed theme. It add a column to the Themes table on `wp-admin/network/themes.php`.
 
-In addition, network admins can choose to provide this information to their users via a toggle on the administration page.
+Optionally you can display the usage count in the theme details overlay on `wp-admin/plugins.php` activated via filter described in the [FAQ](https://wordpress.org/plugins/wpmu-theme-usage-info/faq/).
 
-If enabled, users will be able to view data on theme usage in Appearance -> themes for every theme except the currently activated theme. A single line of text is added just before the activate link indicating how many blogs are currently using the theme. When clicked, a scrolling list of themes is displayed in a thickbox:
-
-Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-stats/">Ron and Andrea</a> for their prior work in this area.
+> __Requires a WordPress Multisite Installation__
+> JavaScript is required to toggle the list of sites using a plugin
 
 = Development =
 
@@ -30,24 +29,38 @@ Thanks go out to <a href="http://wpmututorials.com/plugins/wordpress-mu-theme-st
 1. Install by searching "WPMU Theme Info" on Plugins > Add New > Search
 2. Activate by clicking "Network Activate"
 
+== Frequently Asked Questions ==
+
+= When is the stats data refreshed? =
+
+ - Auto refresh on every theme switch
+ - Auto refresh on `network/themes.php` if Transient is expired (2h/24h on large networks)
+ - Manual refresh if you visit `network/themes.php?manual-stats-refresh=1`
+
+= What happens on large installations =
+
+ - Auto refresh is not running on plugin (de)activation
+ - Stats data is being regenerated every 24h (see action `wpmu_plugin_stats_refresh`)
+
+= Hooks =
+
+- [Filter] `wpmu_theme_stats_refresh` - (int) seconds - Manually set the expiration time of the data (Transient)
+- [Filter] `wpmu_theme_stats_show_count` - (bool) true|false - Activate the display of the usage count in the theme details overlay; use `__return_true` as callback for the filter
+
 == Screenshots ==
 
-1. Network Admin view of list of used and unused themes.
-2. Network Admin view of list toggle controls for user access.
-3. User view of theme popularity information.
-4. User view of blogs using theme.
+1. Network Admin view of themes table showing the usage count
 
 == Upgrade Notice ==
 
 **ATTENTION:**
-When you update to version 2.1 the plugin gets deactivated automatically.
-You need to reactivate by clicking "Network Activate". No data is lost.
+When you update to version 2.0 the plugin gets deactivated automatically.
 
 == Changelog ==
-
-= 2.0-dev =
-* added Spanish translation by Eduardo Larequi (https://github.com/elarequi)
-* TBD
+= 2.0 (2015-01-15) =
+ * Integrated data into 'themes.php' table
+ * Moved from storing data in option to transient
+ * Changed main filename resulting in a deactivation after update
 
 = 1.9 =
 * fix + update of tablesort js library

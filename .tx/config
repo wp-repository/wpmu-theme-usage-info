@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[wpmu-theme-usage-info.wpmu-theme-usage-info]
+file_filter = languages/wpmu-theme-usage-info-<lang>.po
+source_file = languages/wpmu-theme-usage-info.pot
+source_lang = en_US
+type = PO
