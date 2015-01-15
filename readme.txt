@@ -16,13 +16,14 @@ This plugin displays the count and the individual sites for each installed theme
 Optionally you can display the usage count in the theme details overlay on `wp-admin/plugins.php` activated via filter described in the [FAQ](https://wordpress.org/plugins/wpmu-theme-usage-info/faq/).
 
 > __Requires a WordPress Multisite Installation__
+>
 > JavaScript is required to toggle the list of sites using a plugin
 
 = Development =
 
 * GitHub Repository: [wp-repository](https://github.com/wp-repository) / [wpmu-theme-usage-info](https://github.com/wp-repository/wpmu-theme-usage-info)
 * Issue-Tracker: [WPMU Theme Info Issues](https://github.com/wp-repository/wpmu-theme-usage-info/issues) **Please use the Issue-Tracker at GitHub!!**
-* Translation: [Translate > WPMU Theme Usage Info](http://wp-translate.org/projects/wpmu-theme-usage-info)
+* Translation: [https://www.transifex.com/projects/p/wpmu-theme-usage-info/](https://www.transifex.com/projects/p/wpmu-theme-usage-info/)
 
 == Installation ==
 
