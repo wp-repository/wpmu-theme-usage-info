@@ -113,23 +113,11 @@ class WPMU_Theme_Usage_Info {
 
 	} // END instance()
 
-	public function extend_overlay( $prepared_themes ) {
-		
-		$network_data = get_site_transient( 'theme_stats_data' );
-		
-		foreach ( $prepared_themes as $theme => $key ) {
-
-			$data         = isset( $network_data[ $theme ] ) ? $network_data[ $theme ] : 0;
-			$active_count = isset( $network_data[ $theme ] ) ? sizeOf( $data ) : 0;
-			
-			$prepared_themes[ $theme ]['version'] .= ' | ' . sprintf( _n( 'Active on %d site', 'Active on %d sites', $active_count, 'wpmu-theme-usage-info' ) , $active_count );
-
-		}
-
-		return $prepared_themes;
-
-	} // END extend_overlay()
-
+	/**
+	 * Check for Transient and update appropriately
+	 * 
+	 * @since 2.0.0
+	 */
 	public function load() {
 
 		$theme_stats_data = get_site_transient( 'theme_stats_data' );
@@ -139,6 +127,21 @@ class WPMU_Theme_Usage_Info {
 		}
 
 	} // END load()
+
+	/**
+	 * Regenerate the statistics on every theme switch network-wide
+	 *
+	 * @since 1.0.0
+	 */
+	public function auto_refresh() {
+
+		if ( wp_is_large_network() ) {
+			$this->load();
+		} else {
+			$this->generate_theme_blog_list();
+		}
+
+	} // END auto_refresh()
 
 	public function add_css() {
 		?>
@@ -176,7 +179,7 @@ class WPMU_Theme_Usage_Info {
 
 			echo '<p>';
 			if ( 0 === $active_count ) {
-				_e( 'Not Active on any site', 'wpmu-plugin-stats' );
+				_e( 'Not Active on any site', 'wpmu-theme-usage-info' );
 			} else {
 				printf(
 					_n( 'Active on %2$s %1$d site %3$s', 'Active on %2$s %1$d sites %3$s', $active_count, 'wpmu-theme-usage-info' ),
@@ -188,11 +191,14 @@ class WPMU_Theme_Usage_Info {
 			echo '</p>';
 
 			if ( isset( $network_data[ $theme->stylesheet ] ) && is_array( $network_data[ $theme->stylesheet ] ) ) {
+
 				echo "<ul class=\"siteslist\" id=\"siteslist_{$theme->stylesheet}\">";
+
 				foreach ( $network_data[ $theme->stylesheet ] as $theme_data ) {
 					$link_title = empty( $theme_data['name'] ) ? $theme_data['siteurl'] : $theme_data['name'];
-					echo '<li><a href="http://' . $theme_data['siteurl'] . '" target="new">' . $link_title . '</a></li>';
+					echo '<li><a href="http://' . esc_html( $theme_data['siteurl'] ) . '" target="new">' . esc_html( $link_title ) . '</a></li>';
 				}
+
 				echo '</ul>';
 			}
 
@@ -206,13 +212,6 @@ class WPMU_Theme_Usage_Info {
 	 * @todo fetch all themes and list them with number of blogs even if count == 0
 	 *
 	 * @since 1.0.0
-	 *
-	 * @see switch_to_blog()
-	 * @see wp_get_theme()
-	 * @see trailingslashit()
-	 * @see get_bloginfo()
-	 * @see restore_current_blog()
-	 * @see update_site_option()
 	 *
 	 * @global object $wpdb
 	 * @global array $current_site
@@ -273,22 +272,35 @@ class WPMU_Theme_Usage_Info {
 	} // END generate_theme_blog_list()
 
 	/**
-	 * Regenerate the statistics on every theme switch network-wide
+	 * Append the usage count to the version display on the theme overlay
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
-	 * @uses generate_plugin_blog_list()
-	 * @action switch_theme
+	 * @param  string $prepared_themes
+	 * @return string
 	 */
-	public function auto_refresh() {
-		
-		if ( wp_is_large_network() ) {
-			$this->load();
-		} else {
-			$this->generate_theme_blog_list();
+	public function extend_overlay( $prepared_themes ) {
+
+		$options = false;
+		$display = apply_filters( 'wpmu_theme_stats_show_count', $options );
+
+		if ( $display ) {
+
+			$network_data = get_site_transient( 'theme_stats_data' );
+
+			foreach ( $prepared_themes as $theme => $key ) {
+
+				$data         = isset( $network_data[ $theme ] ) ? $network_data[ $theme ] : 0;
+				$active_count = isset( $network_data[ $theme ] ) ? sizeOf( $data )         : 0;
+
+				$prepared_themes[ $theme ]['version'] .= ' | ' . sprintf( _n( 'Active on %2$s %1$d site %3$s', 'Active on %2$s %1$d sites %3$s', $active_count, 'wpmu-theme-usage-info' ) , $active_count, '', '' );
+
+			}
 		}
 
-	} // END auto_refresh()
+		return $prepared_themes;
+
+	} // END extend_overlay()
 
 	/**
 	 * Load the plugin's textdomain hooked to 'plugins_loaded'.
@@ -323,6 +335,7 @@ class WPMU_Theme_Usage_Info {
 		}
 
 		// Delete legacy options
+		delete_site_option( 'cets_theme_info_allow' );
 		delete_site_option( 'cets_theme_info_data' );
 		delete_site_option( 'cets_theme_info_data_freshness' );
 
