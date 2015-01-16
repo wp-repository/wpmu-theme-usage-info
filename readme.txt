@@ -19,6 +19,10 @@ Optionally you can display the usage count in the theme details overlay on `wp-a
 >
 > JavaScript is required to toggle the list of sites using a plugin
 
+= Other Multisite Plugins =
+[WPMU Plugin Stats](https://wordpress.org/plugins/wpmu-plugin-stats/)
+[WPMU Plugin Manager](https://wordpress.org/plugins/wpmu-plugin-manager/)
+
 = Development =
 
 * GitHub Repository: [wp-repository](https://github.com/wp-repository) / [wpmu-theme-usage-info](https://github.com/wp-repository/wpmu-theme-usage-info)
@@ -27,7 +31,7 @@ Optionally you can display the usage count in the theme details overlay on `wp-a
 
 == Installation ==
 
-1. Install by searching "WPMU Theme Info" on Plugins > Add New > Search
+1. Install by searching "WPMU Theme Usage Info" on Plugins > Add New > Search
 2. Activate by clicking "Network Activate"
 
 == Frequently Asked Questions ==
