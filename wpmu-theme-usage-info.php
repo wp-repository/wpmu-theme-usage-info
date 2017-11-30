@@ -10,7 +10,7 @@
 Plugin Name: WPMU Theme Usage Info
 Plugin URI: https://wordpress.org/plugins/wpmu-theme-usage-info/
 Description: Provides info to network admins and users on the popularity of themes
-Version: 2.0.0
+Version: 2.1.0
 Author: Christian Foellmann & Jason Lemahieu
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html

@@ -13,7 +13,8 @@ Gives network admins an easy way to see what themes are actively used on the sit
 
 > The plugin is deprecated and reaches a hard end-of-life date on 31. January 2018!
 
-= You should switch to [Multisite Enhancements](https://wordpress.org/plugins/multisite-enhancements/). It provides the same functionality and is actively maintained. =
+= Alternative =
+You should switch to [Multisite Enhancements](https://wordpress.org/plugins/multisite-enhancements/). It provides the same functionality and is actively maintained.
 
 This plugin displays the count and the individual sites for each installed theme. It add a column to the Themes table on `wp-admin/network/themes.php`.
 
