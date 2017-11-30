@@ -23,13 +23,8 @@ Optionally you can display the usage count in the theme details overlay on `wp-a
 * __Requires a WordPress Multisite Installation__
 * JavaScript is required to toggle the list of sites using a plugin
 
-= Other Multisite Plugins =
-[WPMU Plugin Stats](https://wordpress.org/plugins/wpmu-plugin-stats/)
-[WPMU Plugin Manager](https://wordpress.org/plugins/wpmu-plugin-manager/)
-
 = Development =
-
-The plugin has reached its end-of-life. Do not use anymore.
+> The plugin has reached its end-of-life. No updates and/or support after 2018-01-31
 
 * GitHub Repository: [wp-repository](https://github.com/wp-repository) / [wpmu-theme-usage-info](https://github.com/wp-repository/wpmu-theme-usage-info)
 
